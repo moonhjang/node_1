@@ -24,7 +24,7 @@ app.get("/", function(req,res){
 });
 
 app.get("/find", function(req,res){
-  res.render('findpost', {"name": "관리자"});
+  res.render('findpost', {"name": "이름"});
 });
 
 app.get("/edit", function(req,res){
