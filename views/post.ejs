@@ -6,6 +6,8 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title> Posting </title>
       
+      <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+      <script src="//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
       <!-- 수정필요 -->
       <!-- <link href="/static/css/main.6842b365.chunk.css" rel="stylesheet">  -->
       <!-- 부트스트랩 -->
@@ -60,37 +62,61 @@
         <h1>게시글 작성페이지</h1>
       </div>
 
+    <form action="/posts_save" method="post">
       <div class ="posting">
         <div class="mb-3 row">
-          <label for="inputPassword" class="col-sm-2 col-form-label">ID</label>
+          <label for="inputUser" class="col-sm-2 col-form-label">USER</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" id="id">
+            <input type="text" class="form-control" id="user" name="user">
           </div>
         </div>
         <div class="mb-3 row">
           <label for="inputPassword" class="col-sm-2 col-form-label">PASSWORD</label>
           <div class="col-sm-10">
-            <input type="password" class="form-control" id="password">
+            <input type="password" class="form-control" id="password" name="password">
           </div>        
         </div>
         <div style="height: 10px;"></div>
         <hr> 
          <div class="mb-3 row">
-          <label for="staticEmail" class="col-sm-2 col-form-label">TITLE</label>
+          <label for="inputTitle" class="col-sm-2 col-form-label">TITLE</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" id="title">
+            <input type="text" class="form-control" id="title" name="title">
           </div>
         </div>
         <div class="mb-3 row">
-          <label for="inputPassword" class="col-sm-2 col-form-label">COMMENT</label>
+          <label for="inputContent" class="col-sm-2 col-form-label">CONTENT</label>
           <div class="col-sm-10">
-            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+            <textarea class="form-control" id="content" name="content" rows="3"></textarea>
           </div>
         </div>
         <div class="posting_btn">
-        <button type="button" onclick="location.href='/'" class="btn btn-dark btn-lg"> SAVE </button> 
+        <!-- <button type="button" id="post_save" onclick="location.href='/'" class="btn btn-dark btn-lg"> SAVE </button>  -->
+        <button type="submit" id="post_save" class="btn btn-dark btn-lg"> SAVE </button> 
         </div>
       </div>
+    </form>
+
+
+      <!-- <script>
+         $("#post_save").click(function() {         
+            $.ajax({
+              url: "/posts",
+              async: true,
+              type: "POST",
+              data: {
+                  test: $("#user").val()               // id: user 입력 값을 test라는 이름으로 보냄
+              },
+              // dataType: "json",
+              success: function(data) {            //POST요청 성공시
+                  alert("보내기 성공!");
+              },
+              error: function(err) {
+                  alert("보내기 실패" + err);
+              }
+            });
+         });
+      </script> -->
 
       <!-- 참고용 -->
 
@@ -114,8 +140,7 @@
         </div>
     </div> -->
 
-      <h1>Node js insert</h1>
-      <h1> <%= name %> </h1>
+  
     </body>
 </html>
 
