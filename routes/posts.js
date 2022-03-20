@@ -54,20 +54,22 @@ const posts = [
     },
   ];
 
-router.get('/posts',(req,res) => {
-    res.json({
-        posts,
-    });
+
+// Posting 목록 (DB의 내용가져오기)
+router.get("/posts", async (req, res, next) => {
+    const posts = await Posts.find();
+    res.json({ posts });
 });
 
-router.get('/posts/:postsId', (req,res) => {
-    const postsId = req.params.postsId;
 
-    const [detail] = posts.filter((item) => item.postsId === Number(postsId))
-    res.json({
-        detail,
-    });
-})
+// Posting 조회 (DB의 내용가져오기)
+router.get('/posts/:postsId', async (req,res) => {
+    const { postsId } = req.params;
+    
+    const posts = await Posts.findOne({ postsId });
+    res.json({ posts });
+
+});
 
 router.post("/posts", async (req,res) => {
     const { postsId, password, user, title, content, createdAt } = req.body;
