@@ -23,6 +23,7 @@ connect();
 
 
 const postsRouter = require('./routes/posts');
+const listsRouter = require('./routes/lists');
 
 // 미들웨어 사용 (가장 상위에 위치)
 const requestMiddleware = (req, res, next) => {
@@ -33,7 +34,7 @@ const requestMiddleware = (req, res, next) => {
 app.use(express.json());
 app.use(requestMiddleware);
 
-app.use('/api', [postsRouter]);
+app.use('/api', [postsRouter, listsRouter]);
 
 
 

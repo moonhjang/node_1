@@ -41,12 +41,15 @@ const goods = [
     },
   ];
 
-  //DB의 내용을 가져오기
-  router.get("/goods", async (req, res, next) => {
-    const goods = await Goods.find();
+ // 상품 전체 목록 (DB의 내용가져오기)
+router.get("/goods", async (req, res, next) => {
+    const { category } = req.query;
+    const goods = await Goods.find({ category });
+
     res.json({ goods });
 });
 
+// 상품 조회 (DB의 내용가져오기)
 router.get('/goods/:goodsId', (req,res) => {
     const goodsId = req.params.goodsId;
 
@@ -56,6 +59,7 @@ router.get('/goods/:goodsId', (req,res) => {
     });
 })
 
+// 상품 등록 (DB에 내용 넣기)
 router.post("/goods", async (req,res) => {
     const { goodsId, name, thumbnailUrl, category, price } = req.body;
 

@@ -10,78 +10,45 @@ const router = express.Router();
 //   res.render('post', {"id": "아무개야~", "title": "타이틀"});
 // });
 
+
 // 1_원본  /api 찍었을때 나옴.
-router.get('/',(req,res) => {
+router.get('/', (req, res) => {
     res.send('this is root page')
 });
-
-const posts = [
-    {
-      postsId: 4,
-      user: "상품 4",
-      password:
-      "qwerasdf",
-      title: "drink",
-      content: "drink",
-      createAt: 2022/03/02,
-    },
-    {
-      postsId: 3,
-      user: "상품 3",
-      password:
-      "qwerasdf",
-      title: "drink",
-      content: "drink",
-      createAt: 2022/03/02,
-    },
-    {
-      postsId: 2,
-      user: "상품 2",
-      password:
-      "qwerasdf",
-      title: "drink",
-      content: "drink",
-      createAt: 2022/03/02,
-    },
-    {
-      postsId: 1,
-      user: "상품 1",
-      password:
-      "qwerasdf",
-      title: "drink",
-      content: "drink",
-      createdAt: 2022/03/02,
-    },
-  ];
 
 
 // Posting 목록 (DB의 내용가져오기)
 router.get("/posts", async (req, res, next) => {
-    const posts = await Posts.find();
+    const { title } = req.query;
+
+    const posts = await Posts.find({ title });
     res.json({ posts });
 });
 
 
 // Posting 조회 (DB의 내용가져오기)
-router.get('/posts/:postsId', async (req,res) => {
+router.get('/posts/:postsId', async (req, res) => {
     const { postsId } = req.params;
-    
+
     const posts = await Posts.findOne({ postsId });
     res.json({ posts });
 
 });
 
-router.post("/posts", async (req,res) => {
+// Posting 등록 (DB에 내용 넣기)
+router.post("/posts", async (req, res) => {
     const { postsId, password, user, title, content, createdAt } = req.body;
 
-    const posts = await Posts.find({postsId});
+    const posts = await Posts.find({ postsId });
     if (posts.length) {
-      return res.status(400).json({ success: false, errorMessage: "이미 있는 데이터입니다."});
+        return res
+        .status(400)
+        .json({ success: false, errorMessage: "이미 있는 데이터입니다." });
     }
 
     const createdPosts = await Posts.create({ postsId, password, user, title, content, createdAt })
 
-    res.json({ posts: createdPosts});
+    res.json({ posts: createdPosts });
 });
 
 module.exports = router;
