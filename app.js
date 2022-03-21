@@ -1,29 +1,18 @@
 const express = require("express");
 const connect = require("./schemas/index.js");
+const cors = require("cors")
 // const bodyParser = require("body-parser");  //추가
-// const Post = require("./models/post")
 const app = express();
 const port = 8080;
 
+app.use(cors());
 
 // const router = express.Router(); //추가
 
 connect();
-// 삭제예정
-// const Todo = require("./models/todo")
-// const mongoose = require("mongoose");
-
-//DB 연결
-// mongoose.connect("mongodb://localhost/post_info", {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// });
-// const db = mongoose.connection;
-// db.on("error", console.error.bind(console, "connection error:"));
-
 
 const postsRouter = require('./routes/posts');
-const listsRouter = require('./routes/lists');
+
 
 // 미들웨어 사용 (가장 상위에 위치)
 const requestMiddleware = (req, res, next) => {
@@ -31,27 +20,29 @@ const requestMiddleware = (req, res, next) => {
     next();
 }
 
+app.use(cors());
+app.use(express.static("static"))
 app.use(express.json());
 app.use(requestMiddleware);
 
-app.use('/api', [postsRouter, listsRouter]);
+app.use('/api', [postsRouter]);
 
 
-
-// app.set('view engine', 'ejs');                                //EJS 템플릿
+//EJS 템플릿
+app.set('view engine', 'ejs');                              
 // app.use(bodyParser.urlencoded({extended : false}));            // URL 인코딩 안함 (bodyParser)
 // app.use(bodyParser.json());                                   // json 타입으로 파싱하게 설정  (bodyParser)
 // app.use(express.static(__dirname + '/'));
 
 
-app.get('/', (req, res) => {
-    res.send("Hello World!");
-});
-
-
 // app.get('/', (req, res) => {
-//   res.render('index', {"id": "아무개야~", "title": "타이틀"});
+//     res.send("Hello World!");
 // });
+
+//EJS 템플릿으로 추가
+app.get('/', (req, res) => {
+  res.render('index', {user: req.params.postsId});
+});
 
 
 // app.get("/", function(req,res){

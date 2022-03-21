@@ -53,10 +53,13 @@ router.get("/goods", async (req, res, next) => {
 router.get('/goods/:goodsId', (req,res) => {
     const goodsId = req.params.goodsId;
 
-    const [detail] = goods.filter((item) => item.goodsId === Number(goodsId))
-    res.json({
-        detail,
-    });
+
+    const goods = await Goods.findOne({ goodsId });
+    res.json ({ goods });
+    // const [detail] = goods.filter((item) => item.goodsId === Number(goodsId))
+    // res.json({
+    //     detail,
+    // });
 })
 
 // 카트에 상품 추가
@@ -92,13 +95,18 @@ router.put("/goods/:goodsId/cart", async (req, res) => {
   const { goodsId } = req.params;
   const { quantity } = req.body;
 
+  if (quantity < 1) {
+    res.status(400).json({ errorMessage: "수량은 1 이상이어야 합니다." });
+    return;
+  }
+
   const existsCarts = await Cart.find({ goodsId: Number(goodsId) });
   if (existsCarts.length) {
     await Cart.updateOne({ goodsId: Number(goodsId) }, { $set: { quantity } });
   }
 
   res.json({ success: true });
-})
+});
 
 
 

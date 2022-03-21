@@ -1,0 +1,40 @@
+- 게시글 작성 API 페이지
+    - Request
+        - Method: POST
+        - URL: /posts
+    - Response
+        - Status code: 201 
+        - Payload: { postsId: number, user: string, password: string, title: string, content: string }
+
+- 게시글 목록 조회 페이지
+    - Request
+        - Method: GET
+        - URL: /posts
+    - Response
+        - Status code: 200
+        - Payload: { postsId: number, user: string, title: string, content: string }[]
+
+- 게시글 조회 페이지
+    - Request
+        - Method: GET
+        - URL: /posts/:postsId
+    - Response
+        - Status code: 200
+        - Payload: { postsId: number, user: string, title: string, content: string }
+
+- 게시글 수정 페이지
+    - 게시글 수정
+        - Request
+            - Method: PUT 
+            - URL: /posts/:postsId     
+        - Response
+            - Status code: 200
+            - Payload: { title: string, password: string, content: string }
+
+    - 게시글 삭제
+        - Request
+            - Method: DELETE
+            - URL: /posts/:postsId
+        - Response
+            - Status code: 200
+            - Payload: { password: string, message: string }

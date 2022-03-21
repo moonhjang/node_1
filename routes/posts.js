@@ -12,13 +12,31 @@ const router = express.Router();
 // });
 
 
+router.get("/posts/list", async (req, res) => {
+    
+    const lists = await List.find();
+    const postsIds = lists.map((list) => list.postsId);
+    const posts = await Posts.find({ postsId: postsIds });
+    console.log(posts)
+    const results = lists.map((list) => {
+    return {
+        quantity: list.quantity,
+        posts: posts.find((item) => item.postsId === list.postsId)
+      };
+    });
+
+    res.json({
+      lists: results,
+    });
+});
+
 // 1_원본  /api 찍었을때 나옴.
 router.get('/', (req, res) => {
     res.send('this is root page')
 });
 
 
-// Posting 목록 (DB의 내용가져오기)
+// Posting 조회 (DB의 내용가져오기)
 router.get("/posts", async (req, res, next) => {
     const { title } = req.query;
 
@@ -27,7 +45,7 @@ router.get("/posts", async (req, res, next) => {
 });
 
 
-// Posting 조회 (DB의 내용가져오기)
+// Posting 상세조회 (DB의 내용가져오기)
 router.get('/posts/:postsId', async (req, res) => {
     const { postsId } = req.params;
 
