@@ -4,23 +4,21 @@ const Lists = require("../schemas/list")
 const router = express.Router();
 
 router.get("/lists", async (req, res) => {
+    
     const lists = await Lists.find();
-    console.log(lists)
-  const postsIds = lists.map((list) => list.postsId);
+    const postsIds = lists.map((list) => list.postsId);
+    const posts = await Posts.find({ postsId: postsIds });
+    console.log(posts)
+    const results = lists.map((list) => {
+    return {
+        quantity: list.quantity,
+        posts: posts.find((item) => item.postsId === list.postsId)
+      };
+    });
 
-//   const posts = await Posts.find({ postsId: postsIds });
-
-//   const results = lists.map((list) => {
-// 		return {
-// 			quantity: list.quantity,
-// 			posts: posts.find((item) => item.postsId === list.postsId)
-// 		};
-//   });
-
-//   res.json({
-//     lists: results,
-    res.json({ lists })
-//   });
+    res.json({
+      lists: results,
+    });
 });
 
 module.exports = router;
