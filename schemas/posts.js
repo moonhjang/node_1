@@ -2,17 +2,11 @@
 const mongoose = require("mongoose");
 
 const postsSchema = new mongoose.Schema({
-    postsId: {
-        type: Number,
-        required: true,
-        unique: true 
-    },
     user: {
         type: String,
         min: 3,
         max: 12,
         required: true,
-        unique: true
     },
     password: {
         type: String,
@@ -28,7 +22,7 @@ const postsSchema = new mongoose.Schema({
     },
     createdAt: {
         type: Date,
-        defalt: Date.now()
+        defalt: Date.now(),
     }
   },
   {
