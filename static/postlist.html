@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title> PostingList </title>
+      
+      <!-- 수정필요 -->
+      <!-- <link href="/static/css/main.6842b365.chunk.css" rel="stylesheet">  -->
+
+      <!-- 부트스트랩 -->
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
+      <script>
+          $(document).ready(function() {
+            post_list();
+          });
+          
+          function post_list() {
+            $.ajax({
+                type: "GET",
+                url: "/api",
+                contentType: "json",
+                data: {},
+                success: function (response) {
+                      
+                  console.log(response)
+                    alert("First READY3")
+
+                }
+            });
+          } 
+      </script> 
+
+      <style>
+        .background {
+          background-color: rgb(48, 46, 46);
+          width: 100%;
+          height: 20rem;
+
+          color: white;
+          text-align: center;
+          padding-top: 9rem;
+        }
+
+        .find_date {
+          /* background-color: green; */
+          /* max-width: 800px; */
+          width: 75%;
+
+          margin: 20px auto 0px auto;
+          border-radius: 10px;
+          
+          border:rgb(48, 46, 46);
+          border-width: 2px;
+          padding: 15px; 
+        }
+        
+        .post_list{
+          width: 95%;
+          margin: 30px auto;
+          padding: 20px;
+          background-color: white;
+
+          border: solid 1px gray;
+          border-radius: 10px;
+        }
+          
+      </style>
+    </head>
+
+    <body>
+      <div class="background">
+        <h1>전체 게시글 목록 조회 페이지1</h1>
+      </div>
+
+      <!-- <div class ="find_date">
+        <div class="mb-3 row">
+          <label for="staticEmail" class="col-sm-2 col-form-label">TITLE</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="title">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="inputPassword" class="col-sm-2 col-form-label">USER</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="user">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="inputPassword" class="col-sm-2 col-form-label">DATE</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="date">
+          </div>
+        </div>
+        <button type="button" class="btn btn-dark" style="margin-left: 0px;"> 조회하기 </button> 
+      </div> -->
+
+      <!-- 게시글 목록 -->
+      <div class="post_list">
+        <table class="table" style="margin: 20px auto 20px auto">
+          <thead class="thead-light">
+              <tr>
+                  <th scope="col">DATE</th>  
+                  <th scope="col">ID</th>
+                  <th scope="col" style="width:30%">TITLE </th>
+                  <th scope="col">POST</th>                           
+              </tr>
+          </thead>
+          <tbody id="tbody-box">
+              <tr id="word-word">
+                  <th scope="col">DATE</th>  
+                  <th scope="col">a</th>
+                  <td><a href="#">s</a></td>
+                  <td href="#" >a single distinct meaningful element of speech or writing, used with others (or
+                      sometimes
+                      alone) to form a sentence and typically shown with a space on either side when written
+                      or
+                      printed.
+                  </td>    
+              </tr>
+
+              <tr id="word-dictionary">
+                  <th scope="col">DATE</th>  
+                  <th scope="col">ID</th>
+                  <td><a href="#">dictionary</a></td>
+                  <td>a book or electronic resource that lists the words of a language (typically in
+                      alphabetical
+                      order) and gives their meaning, or gives the equivalent words in a different language,
+                      often
+                      also providing information about pronunciation, origin, and
+                  </td>
+              </tr>
+              <tr id="word-name">
+                  <th scope="col">DATE</th>  
+                  <th scope="col">ID</th>
+                  <td><a href="#">name</a></td>
+                  <td>a word or set of words by which a person or thing is known, addressed, or referred to.
+                  </td>
+              </tr>
+             
+              <tr id="word-name">
+                <th scope="col">DATE</th>  
+                <th scope="col">ID</th>
+                <td><a href="#">name</a></td>
+                <td>a word or set of words by which a person or thing is known, addressed, or referred to.
+                </td>
+              </tr>
+             
+          </tbody>
+        </table>  
+      </div>
+    
+    </body>
+</html>
+
+

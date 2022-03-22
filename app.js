@@ -5,10 +5,6 @@ const cors = require("cors")
 const app = express();
 const port = 8080;
 
-app.use(cors());
-
-// const router = express.Router(); //추가
-
 connect();
 
 const postsRouter = require('./routes/posts');
@@ -25,34 +21,19 @@ app.use(express.static("static"))
 app.use(express.json());
 app.use(requestMiddleware);
 
-app.use('/api', [postsRouter]);
-
-
-//EJS 템플릿
-app.set('view engine', 'ejs');                              
-// app.use(bodyParser.urlencoded({extended : false}));            // URL 인코딩 안함 (bodyParser)
-// app.use(bodyParser.json());                                   // json 타입으로 파싱하게 설정  (bodyParser)
-// app.use(express.static(__dirname + '/'));
-
-
+// // 전체페이지 클라에 내려주기
 // app.get('/', (req, res) => {
-//     res.send("Hello World!");
+//     console.log('전체페이지 클라에 내려주기')
+//     res.sendFile(__dirname+'/static/index.html');
 // });
 
-//EJS 템플릿으로 추가
-app.get('/', (req, res) => {
-  res.render('index', {user: req.params.postsId});
-});
-
-
-// app.get("/", function(req,res){
-//   res.render('index', {"id": "아무개야~", "title": "타이틀"});
+// app.get('/', async (req, res) => {
+//     const postlist = await Posts.find({});
+//     console.log('전체페이지 클라에 내려주기2')
+//     res.json(postlist);
 // });
 
-
-// app.get("/posts", function(req,res){
-//   res.render('post', {"id": "아무개야~", "title": "타이틀"});
-// });
+app.use('/api', [postsRouter]);
 
 // app.post("/posts_save", function(req,res){
 //   var user = req.body.user;
@@ -82,33 +63,6 @@ app.get('/', (req, res) => {
 // });
 
 
-// 1. 포스트 전체페이지 포스트 전체 받아오기  ##post는 어디에서 가져온것일까.
-// router.get("/posts", async (req, res) => {
-//   console.log ({ post })
-//   // const { post } = req.query;        
-
-//   // const posts = await Posts.find({ post });
-  
-//   res.json({
-//     posts,
-//   });
-// });
-
-
-// 2. 상세조회
-// router.get("/posts/:userId", async (req, res) => {
-//   console.log ({ userId }) = req.params;
-
-//   const [defalt] = await Posts.find({ })
-//   // const { post } = req.query;        
-
-//   // const posts = await Post.find({ post });
-  
-//   res.json({
-//     posts,
-//   });
-// });
-
 
 // router.post("/posts", async (req, res) => {
 //   console.log(req.body);
@@ -136,32 +90,6 @@ app.get('/', (req, res) => {
 //   return res.redirect("/");
   
 // });
-
-// app.get("/:title", async (req,res) => {
-//   let {title} = req.params;
-
-//   if (title == 'seoul'){
-//     let data = [
-//       {"id": "홍길동", "title": "seoul"},
-//       {"id": "김청수", "title": "seoul"}
-//     ];
-//     res.send(data);
-//   }else if (title == 'jeju') {
-//     let data = [
-//       {name: "아무개", title: "jeju"},
-//       {name: "화이팅", title: "jeju"}
-//     ];
-//     res.send(data);
-//   }else {
-//     res.send('Title is not correct.')
-//   }
-
-
-  // res.render('post.ejs', {"name": "관리자"});
-
-// });
-
-
 
 
 // router.get("/posts", async(req,res) => {

@@ -78,8 +78,8 @@
         <tbody id="tbody-box">
             <tr id="word-word">
                 <th scope="col">DATE</th>  
-                <th scope="col"><%= user %></th>
-                <td><a href="#"><%= title %></a></td>
+                <th scope="col">a</th>
+                <td><a href="#">s</a></td>
                 <td href="#" >a single distinct meaningful element of speech or writing, used with others (or
                     sometimes
                     alone) to form a sentence and typically shown with a space on either side when written
@@ -106,12 +106,22 @@
                 <td>a word or set of words by which a person or thing is known, addressed, or referred to.
                 </td>
             </tr>
+            <% for (let i= 0; i < post.length; i++) {%>
+            <tr id="word-name">
+              <th scope="col"><%= JSON.stringify(post[i]) %></th>  
+              <th scope="col">ID</th>
+              <td><a href="#">name</a></td>
+              <td>a word or set of words by which a person or thing is known, addressed, or referred to.
+              </td>
+            </tr>
+            <% } %>
         </tbody>
     </table>  
       
 
       <h1>Node js insert</h1>
-      <h1> <%= id %> </h1>
+      <h1> user </h1>
+      <h1> user </h1>
     </body>
 </html>
 

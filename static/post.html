@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title> Posting </title>
+      
+      <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+      <script src="//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+      
+      <!-- 수정필요 -->
+      <!-- <link href="/static/css/main.6842b365.chunk.css" rel="stylesheet">  -->
+
+      <!-- 부트스트랩 -->
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+      <script>
+          function save_posting() {
+            let user = $('#user').val();
+            let password = $('#password').val();
+            let title = $('#title').val();
+            let content = $('#content').val();
+
+            $.ajax({
+                type: "POST",
+                url: "/api/posts",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    user: user,
+                    password: password,
+                    title: title,
+                    content: content
+                }),
+
+                success: function (response) {
+                    alert(response["msg"])
+                    document.location.href="/"
+                }
+            });
+        }
+      </script>
+      <style>
+        .background {
+          background-color: rgb(48, 46, 46);
+          width: 100%;
+          height: 20rem;
+
+          color: white;
+          text-align: center;
+          padding-top: 9rem;
+        }
+
+        .find_date {
+          width: 75%;
+
+          margin: 20px auto 0px auto;
+          border-radius: 10px;
+          
+          border:rgb(48, 46, 46);
+          border-width: 2px;
+          padding: 15px; 
+          width: 80%;
+        }
+
+        .posting {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: white;
+
+            border: solid 1px gray;
+            border-radius: 10px;
+        }
+
+        .posting_btn {
+            margin: 10px -60px 0px auto;
+            width: 150px;
+            height: auto;
+            
+            border-radius: 7px;
+        }
+
+      </style>
+    </head>
+
+    <body>
+      <div class="background">
+        <h1>게시글 작성페이지</h1>
+      </div>
+    
+      <div class ="posting">
+        <div class="mb-3 row">
+          <label for="inputUser" class="col-sm-2 col-form-label">USER</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="user" name="user">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="inputPassword" class="col-sm-2 col-form-label">PASSWORD</label>
+          <div class="col-sm-10">
+            <input type="password" class="form-control" id="password" name="password">
+          </div>        
+        </div>
+        <div style="height: 10px;"></div>
+        <hr> 
+         <div class="mb-3 row">
+          <label for="inputTitle" class="col-sm-2 col-form-label">TITLE</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="title" name="title">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="inputContent" class="col-sm-2 col-form-label">CONTENT</label>
+          <div class="col-sm-10">
+            <textarea class="form-control" id="content" name="content" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="posting_btn">
+        <button type="submit" onclick="save_posting()" class="btn btn-dark btn-lg"> SAVE </button> 
+        </div>
+      </div>
+
+ </body>
+</html>
+
+
