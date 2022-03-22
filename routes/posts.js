@@ -31,9 +31,7 @@ const router = express.Router();
 
 // Main2  /api 찍었을때 나옴.
 router.get('/', async (req, res) => {
-    const postlist = await Posts.find({});
-    console.log('Main1')
-    console.log(postlist )
+    const postlist = await Posts.find({}).sort("-createdAt").exec();
     res.json(postlist);
 });
 

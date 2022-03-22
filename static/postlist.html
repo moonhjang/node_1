@@ -25,10 +25,26 @@
                 contentType: "json",
                 data: {},
                 success: function (response) {
-                      
-                  console.log(response)
-                    alert("First READY3")
+                    console.log(response)
+                    let rows = response  
+                    for (let i = 0; i < rows.length; i++){
+                      let postsId = rows[i]['postsId']
+                      let user = rows[i]['user']
+                      let title = rows[i]['title']
+                      let content = rows[i]['content']
+                      let createdAt = rows[i]['createdAt']
 
+                      let date = createdAt.substr(0,10)
+
+                      let temp_html = `<tr id="word-word" class="click" onclick = "location.href='/posts/:${postsId}'">
+                                          <th scope="col"> ${date}</th>  
+                                          <th scope="col">${user}</th>
+                                          <td>${title}</td>
+                                          <td>${content}</td>    
+                                        </tr>`
+
+                      $('#tbody-box').append(temp_html)                 
+                    }
                 }
             });
           } 
@@ -58,7 +74,7 @@
           padding: 15px; 
         }
         
-        .post_list{
+        .post_list {
           width: 95%;
           margin: 30px auto;
           padding: 20px;
@@ -67,7 +83,15 @@
           border: solid 1px gray;
           border-radius: 10px;
         }
-          
+        
+        .click {
+          color: black;
+        }
+
+        .click:hover{
+          background-color: lightgrey;
+        }
+
       </style>
     </head>
 
@@ -104,51 +128,12 @@
           <thead class="thead-light">
               <tr>
                   <th scope="col">DATE</th>  
-                  <th scope="col">ID</th>
+                  <th scope="col">USER</th>
                   <th scope="col" style="width:30%">TITLE </th>
-                  <th scope="col">POST</th>                           
+                  <th scope="col">CONTENT</th>                           
               </tr>
           </thead>
           <tbody id="tbody-box">
-              <tr id="word-word">
-                  <th scope="col">DATE</th>  
-                  <th scope="col">a</th>
-                  <td><a href="#">s</a></td>
-                  <td href="#" >a single distinct meaningful element of speech or writing, used with others (or
-                      sometimes
-                      alone) to form a sentence and typically shown with a space on either side when written
-                      or
-                      printed.
-                  </td>    
-              </tr>
-
-              <tr id="word-dictionary">
-                  <th scope="col">DATE</th>  
-                  <th scope="col">ID</th>
-                  <td><a href="#">dictionary</a></td>
-                  <td>a book or electronic resource that lists the words of a language (typically in
-                      alphabetical
-                      order) and gives their meaning, or gives the equivalent words in a different language,
-                      often
-                      also providing information about pronunciation, origin, and
-                  </td>
-              </tr>
-              <tr id="word-name">
-                  <th scope="col">DATE</th>  
-                  <th scope="col">ID</th>
-                  <td><a href="#">name</a></td>
-                  <td>a word or set of words by which a person or thing is known, addressed, or referred to.
-                  </td>
-              </tr>
-             
-              <tr id="word-name">
-                <th scope="col">DATE</th>  
-                <th scope="col">ID</th>
-                <td><a href="#">name</a></td>
-                <td>a word or set of words by which a person or thing is known, addressed, or referred to.
-                </td>
-              </tr>
-             
           </tbody>
         </table>  
       </div>
