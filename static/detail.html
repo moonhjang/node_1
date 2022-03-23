@@ -12,39 +12,73 @@
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
       
+
+      <!-- 두개중 맞는 것 확인 -->
+      <!-- <script type="text/javascript" src="jquery-1.6.4.js"></script> -->
+      <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+
       <script>
         $(document).ready(function() {
           post_detail();
         });
         
         function post_detail() {
+          let address = unescape(location.href)
+          let param = address.split("/")[5];
+          console.log(param)
+
           $.ajax({
               type: "GET",
-              url: "/api/posts/:",
+              url: '/api/posts/'+param +'/detail',
               contentType: "json",
               data: {},
+              // error: function (xhr, status, error) {
+              //     alert("에러 발생!")
+              // },
               success: function (response) {
-                  console.log(response['postsId'])
-                  concole.log('hi detail')
-                  // let rows = response  
-                  // for (let i = 0; i < rows.length; i++){
-                  //   let postsId = rows[i]['postsId']
-                  //   let user = rows[i]['user']
-                  //   let title = rows[i]['title']
-                  //   let content = rows[i]['content']
-                  //   let createdAt = rows[i]['createdAt']
+                  let rows = response
+                  for (let i = 0; i < rows.length; i++){
+                      let postsId = rows[i]['postsId']
+                      let user = rows[i]['user']
+                      let title = rows[i]['title']
+                      let content = rows[i]['content']
+                      let createdAt = rows[i]['createdAt']
 
-                  //   let date = createdAt.substr(0,10)
+                      let date = createdAt.substr(0,10)
 
-                  //   let temp_html = `<tr id="word-word" class="click" onclick = "location.href='/posts/:${postsId}'">
-                  //                       <th scope="col"> ${date}</th>  
-                  //                       <th scope="col">${user}</th>
-                  //                       <td>${title}</td>
-                  //                       <td>${content}</td>    
-                  //                     </tr>`
+                      let temp_html =  
+        `<div class ="posting">
+          <div class="labelR">
+              <p>ID</p>
+            </div>
+          <div class="labelL">
+            <p>${user}</p>
+          </div>
+          <div class="labelR">
+            <p>DATE</p>
+          </div>
+          <div class="labelL">
+            <p>${date}</p>
+          </div>
+          <hr>
+          <div class="labelR">
+            <p>TITLE</p>
+          </div>
+          <div class="labelL_lg">
+            <p>${title}</p>
+          </div>
+          <div class="labelR">
+            <p>CONTENT</p>
+          </div>
+          <div class="labelL_lg">
+            <p>${content}</p>
+          </div> 
+          
+        </div>`
 
-                  //   $('#tbody-box').append(temp_html)                 
-                  // }
+
+                      $('#detail-box').append(temp_html)
+                }
               }
           });
         } 
@@ -73,7 +107,7 @@
         }
 
         .posting {
-            width: 95%;
+            width: 70%;
             margin: 30px auto;
             padding: 20px;
             background-color: white;
@@ -86,8 +120,27 @@
             margin: 10px -60px 0px auto;
             width: 150px;
             height: auto;
-            
+  
             border-radius: 7px;
+        }
+        
+        
+        
+        .labelR {
+            display: inline-block;
+            text-align: left;
+            width: 10%;
+            margin-right: 2.5em;
+        }
+
+        .labelL {
+            display: inline-block;
+            width: 30%;
+        }
+
+        .labelL_lg {
+            display: inline-block;
+            width: 75%;
         }
 
       </style>
@@ -98,61 +151,9 @@
         <h1>게시글 조회페이지</h1>
       </div>
 
-      <div class ="posting">
-        <div class="mb-3 row">
-          <label for="inputPassword" class="col-sm-2 col-form-label">ID</label>
-          <div class="col-sm-10">
-            <!-- <input type="text" class="form-control" id="id"> -->
-          </div>
-        </div>
-        <div class="mb-3 row">
-          <label for="inputPassword" class="col-sm-2 col-form-label">DATE</label>
-          <div class="col-sm-10">
-            <!-- <input type="password" class="form-control" id="password"> -->
-          </div>        
-        </div>
-        <div style="height: 10px;"></div>
-        <hr> 
-         <div class="mb-3 row">
-          <label for="staticEmail" class="col-sm-2 col-form-label">TITLE</label>
-          <!-- <div class="col-sm-10">
-            <input type="text" class="form-control" id="title">
-          </div> -->
-        </div>
-        <div class="mb-3 row">
-          <label for="inputPassword" class="col-sm-2 col-form-label">COMMENT</label>
-          <!-- <div class="col-sm-10">
-            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-          </div> -->
-        </div>
-        <div class="posting_btn">
-        <button type="button" onclick="location.href='/'" class="btn btn-dark btn-lg"> SAVE </button> 
-        </div>
+      <div id= "detail-box">
       </div>
 
-      <!-- 참고용 -->
-
-      <!-- <div class="container">
-        <div class="d-flex justify-content-between align-items-end">
-            <div>
-                <h1 id="word" style="display: inline;">owl</h1>
-                <h5 id="pronunciation" style="display: inline;">/oul/</h5>
-            </div>
-            <button id="btn-save" class="btn btn-outline-sparta btn-lg">save</button>
-            <button id="btn-delete" class="btn btn-sparta btn-lg">delete</button>
-        </div>
-        <hr>
-        <div id="definitions">
-            <div style="padding:10px">
-                <i>noun</i>
-                <br>a nocturnal bird of prey with large eyes, a facial disc, a hooked beak, and typically a loud
-                hooting call.<br>
-                <span class="example">I love reaching out into that absolute silence, when you can hear the owl or the wind.</span>
-            </div>
-        </div>
-    </div> -->
-
-      
     </body>
 </html>
 

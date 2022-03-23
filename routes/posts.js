@@ -1,6 +1,5 @@
 const express = require("express");
 const Posts = require("../schemas/posts")
-const List = require("../schemas/list")
 const router = express.Router();
 
 
@@ -37,26 +36,18 @@ router.get('/posts', (req, res) => {
 });
 
 
-//////////////// 저장이 1이상일 경우 안됨////////////////////
+//////////////// 비밀번호 암호화 ////////////////////
 // Posting(정보등록): 클라이언트 html에서 입력한 정보 => DB로 보내기  /////////(추가작업필요)
 router.post("/posts", async (req, res) => {
     const { user, password, title, content } = req.body
-    
-    // let postsId = await Posts.find().sort({postsId: -1}).limit(1)
-   
-    // let postnum = Object.values(postsId)
-    
-    // if ( postsId > 1) {
-    //   postsId += 1
-    // } else {
-    //   postsId = 1
-    // }
+
+    const date = new Date()
+    let postsId = date.valueOf();
 
     res.json({ msg: "저장완료" });
-    await Posts.create({ user, password, title, content })
+    await Posts.create({ postsId, user, password, title, content })
     
 });
-
 
 
 // detail(상세조회): 클라이언트에 HTML 연결정보 보내기
@@ -67,12 +58,14 @@ router.get('/posts/:postsId', (req, res) => {
 
 
 // detail(상세조회): DB의 내용가져오기
-router.get('/posts/:postsId', async (req, res) => { 
-  console.log('postsId_________________',postsId)
-  const postsId = req.query.postsId;
-    
-  const posts = await Posts.find({ postsId });
-  res.json(posts);
+router.get('/posts/:postsId/detail', async (req, res) => {
+
+    const { postsId } = req.params;
+    console.log('postsId_________________', postsId)
+    const existPosts = await Posts.find({ postsId: Number(postsId) });
+    const path = require("path")
+    console.log(existPosts)
+    res.json(existPosts);
 });
 
 

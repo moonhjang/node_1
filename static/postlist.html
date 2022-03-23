@@ -36,7 +36,7 @@
 
                       let date = createdAt.substr(0,10)
 
-                      let temp_html = `<tr id="word-word" class="click" onclick = "location.href='/api/posts/:postsId?=${postsId}'">
+                      let temp_html = `<tr id="word-word" class="click" onclick = "location.href='/api/posts/${postsId}'">
                                           <th scope="col"> ${date}</th>  
                                           <th scope="col">${user}</th>
                                           <td>${title}</td>
