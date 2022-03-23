@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title> Posting | Edit </title>
+      
+      <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+      <script src="//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+      
+      <!-- 수정필요 -->
+      <!-- <link href="/static/css/main.6842b365.chunk.css" rel="stylesheet">  -->
+
+      <!-- 부트스트랩 -->
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        
+      <script>
+      $(document).ready(function() {
+        post_edit();
+      });
+      
+      function post_edit() {
+        let address = unescape(location.href)
+        let param = address.split("/")[5];
+
+        $.ajax({
+            type: "GET",
+            url: "/api/posts/"+ param +"/get",
+            contentType: "json",
+            data: {},
+            success: function (response) {
+                console.log(response)
+                let rows = response
+                for (let i = 0; i < rows.length; i++){
+                    let postsId = rows[i]['postsId']
+                    let user = rows[i]['user']
+                    let title = rows[i]['title']
+                    let content = rows[i]['content']
+                    let createdAt = rows[i]['createdAt']
+
+                    let date = createdAt.substr(0,10)
+                    
+                    console.log(date)
+
+                    let temp_html = `<div class ="posting">
+                                        <div class="mb-3 row">
+                                        <label for="inputUser" class="col-sm-2 col-form-label">USER</label>
+                                        <div class="col-sm-10">
+                                            ${user}
+                                        </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                        <label for="inputPassword" class="col-sm-2 col-form-label">PASSWORD</label>
+                                        <div class="col-sm-10">
+                                            <input type="password" class="form-control" id="password" name="password">
+                                        </div>        
+                                        </div>
+                                        <div style="height: 10px;"></div>
+                                        <hr> 
+                                        <div class="mb-3 row">
+                                        <label for="inputTitle" class="col-sm-2 col-form-label">TITLE</label>
+                                        <div class="col-sm-10">
+                                            <textarea class="form-control" id="title" name="title" rows="1">${title}</textarea>
+                                        </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                        <label for="inputContent" class="col-sm-2 col-form-label">CONTENT</label>
+                                        <div class="col-sm-10">
+                                            <textarea class="form-control" id="content" name="content" rows="3">${content}</textarea>
+                                        </div>
+                                        </div>
+                                        <div class="posting_btn">
+                                        <button type="submit" onclick="editing()" class="btn btn-dark btn-lg"> SAVE </button>
+                                        <button type="submit" onclick="deleting()" class="btn btn-dark btn-lg"> Delete </button> 
+                                        </div>
+                                    </div>`
+            
+                    $('#edit-box').append(temp_html)
+                    console.log(temp_html)
+                }
+            }
+        });
+      } 
+    
+        function editing() {
+            let address = unescape(location.href)
+            let param = address.split("/")[5];
+
+            let password = $('#password').val();
+            let title = $('#title').val();
+            let content = $('#content').val();
+
+            $.ajax({
+                type: "PUT",
+                url: "/api/posts/"+ param +"/edit",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    password: password,
+                    title: title,
+                    content: content
+                }),
+
+                success: function (response) {
+                    alert(response["msg"])
+                    // window.location.href="/"
+                }
+            });
+        }
+        
+        function deleting() {
+            let address = unescape(location.href)
+            let param = address.split("/")[5];
+
+            $.ajax({
+                type: "DELETE",
+                url: "/api/posts/"+ param,
+                contentType: "application/json",
+                data: {},
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.href="/"
+                }
+            });
+        }
+      </script>
+      <style>
+        .background {
+          background-color: rgb(48, 46, 46);
+          width: 100%;
+          height: 20rem;
+
+          color: white;
+          text-align: center;
+          padding-top: 9rem;
+        }
+
+        .find_date {
+          width: 75%;
+
+          margin: 20px auto 0px auto;
+          border-radius: 10px;
+          
+          border:rgb(48, 46, 46);
+          border-width: 2px;
+          padding: 15px; 
+          width: 80%;
+        }
+
+        .posting {
+            width: 80%;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: white;
+
+            border: solid 1px gray;
+            border-radius: 10px;
+        }
+
+        .posting_btn {
+            margin: 10px -60px 0px auto;
+            width: 150px;
+            height: auto;
+            
+            border-radius: 7px;
+        }
+
+      </style>
+    </head>
+
+    <body>
+      <div class="background">
+        <h1>게시글 수정페이지</h1>
+      </div>
+    
+      <div id="edit-box">
+      </div>
+      
+ </body>
+</html>
+
+

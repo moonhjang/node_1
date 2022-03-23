@@ -9,7 +9,6 @@ const port = 8080;
 connect();
 
 const postsRouter = require('./routes/posts');
-const detailsRouter = require('./routes/details'); //삭제필요
 
 // 미들웨어 사용 (가장 상위에 위치)
 const requestMiddleware = (req, res, next) => {
@@ -23,8 +22,7 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(requestMiddleware);
 
-app.use('/api', [postsRouter, detailsRouter]);  //detailsRouter 부분삭제필요
-
+app.use('/api', [postsRouter]);
 
 //도메인
 app.listen(port, () => {

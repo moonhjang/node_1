@@ -4,7 +4,7 @@
       <meta charset="utf-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title> find Posting </title>
+      <title> Posting | Detail </title>
       
       <!-- 수정필요 -->
       <!-- <link href="/static/css/main.6842b365.chunk.css" rel="stylesheet">  -->
@@ -25,16 +25,12 @@
         function post_detail() {
           let address = unescape(location.href)
           let param = address.split("/")[5];
-          console.log(param)
 
           $.ajax({
               type: "GET",
               url: '/api/posts/'+param +'/detail',
               contentType: "json",
               data: {},
-              // error: function (xhr, status, error) {
-              //     alert("에러 발생!")
-              // },
               success: function (response) {
                   let rows = response
                   for (let i = 0; i < rows.length; i++){
@@ -49,33 +45,33 @@
                       let temp_html =  
         `<div class ="posting">
           <div class="labelR">
-              <p>ID</p>
+              <p>USER</p>
             </div>
           <div class="labelL">
-            <p>${user}</p>
+            <p><b>${user}</b></p>
           </div>
           <div class="labelR">
             <p>DATE</p>
           </div>
           <div class="labelL">
-            <p>${date}</p>
+            <p><b>${date}</b></p>
           </div>
           <hr>
           <div class="labelR">
             <p>TITLE</p>
           </div>
           <div class="labelL_lg">
-            <p>${title}</p>
+            <p><b>${title}</b></p>
           </div>
           <div class="labelR">
             <p>CONTENT</p>
           </div>
           <div class="labelL_lg">
-            <p>${content}</p>
+            <p><b>${content}</b></p>
           </div> 
           <hr>
           <div class="posting_btn">
-            <button onclick="location.href='/posts/${postsId}/edit'" class="btn btn-dark btn-lg"> EDIT </button>
+            <button onclick="location.href='/api/posts/${postsId}/edit'" class="btn btn-dark btn-lg"> EDIT </button>
           </div>
         </div>`
 
@@ -110,7 +106,7 @@
         }
 
         .posting {
-            width: 70%;
+            width: 80%;
             margin: 30px auto;
             padding: 20px;
             background-color: white;
