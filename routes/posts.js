@@ -3,24 +3,6 @@ const Posts = require("../schemas/posts")
 const router = express.Router();
 
 
-// router.get("/posts/list", async (req, res) => {
-    
-//     const lists = await List.find();
-//     const postsIds = lists.map((list) => list.postsId);
-//     const posts = await Posts.find({ postsId: postsIds });
-//     console.log(posts)
-//     const results = lists.map((list) => {
-//     return {
-//         quantity: list.quantity,
-//         posts: posts.find((item) => item.postsId === list.postsId)
-//       };
-//     });
-
-//     res.json({
-//       lists: results,
-//     });
-// });
-
 // /api
 // Mainpage(전체조회): DB => 클라이언트에 보내기
 router.get('/', async (req, res) => {
@@ -51,8 +33,8 @@ router.post("/posts", async (req, res) => {
     const date = new Date()
     let postsId = date.valueOf();
 
-    res.json({ msg: "저장완료" });
     await Posts.create({ postsId, user, password, title, content })
+    res.json({ msg: "저장완료" });
     
 });
 
@@ -87,69 +69,47 @@ router.get("/posts/:postsId/get", async (req, res) => {
     res.json(existPosts);
 })
 
- // detail > Edit: DB의 내용 수정하기 (작업중~)
+
+ // detail > Edit: DB의 내용 수정하기
  router.put("/posts/:postsId/edit", async (req, res) => {
     const { postsId } = req.params;
     const { password, title, content } = req.body;
 
-    const existsPosts = await Posts.find({ postsId: Number(postsId) });
-    const existsPw = await Posts.find({},{_id:0,password:1});
-    const existsId = await Posts.find({},{_id:0,postsId:1});
-    const Id = {'postsId': Number(postsId)}
-    const newPw = {'password': password}
+    const posts = await Posts.find();
+    const postsIds = posts.map((post) => post.postsId);
+    const postsPws = posts.map((post) => post.password);
 
-    console.log('이거다 이거야~',e);
+    for (let i=0; i<postsIds.length; i++){
+        if(postsIds[i] === Number(postsId) && postsPws[i] === password){
+            await Posts.updateOne({ postsId: Number(postsId)}, { $set: {title, content} })
+            return res.json({ msg: '수정 완료🤸' });
 
-
-    // 비밀번호확인 없이 저장
-    // if (existsPosts.length) {
-    // await Posts.updateOne({ postsId: Number(postsId)}, { $set: {title, content} });
-
-    // res.json({ msg: "수정완료" });
-    //end of 비밀번호확인 없이 저장
-    
-    // const existspw = await Posts.find({ password: password });
-   
-    // 비밀번호 확인 후 저장 (번호가 맞아도 비밀번호가 다릅니다라고 활성화)
-    // if (existsPosts.length) {
-    //     if (existspw === password){
-    //         await Posts.updateOne({ postsId: Number(postsId)}, { $set: {title, content} });
-    //         res.json({ result: "수정완료" });
-    //     } else {
-    //         res.json({ result: "비밀번호가 다릅니다." });
-    //     }
-    // endof  비밀번호 확인 후 저장   
-
+        } else if (postsIds[i] === Number(postsId) && postsPws[i] != password){  
+            return res.json({ msg: '비밀번호 불일치🚫' });
+        } 
+    }
 });
 
 
 //  detail > Edit: DB의 삭제하기
 router.delete("/posts/:postsId", async (req, res) => {
-  const { postsId } = req.params;
+    const { postsId } = req.params;
+    const { password } = req.body;
 
+    const posts = await Posts.find();
+    const postsIds = posts.map((post) => post.postsId);
+    const postsPws = posts.map((post) => post.password);
 
-  const existsLists = await Posts.find({ postsId: Number(postsId) }); 
-  if (existsLists.length > 0) {
-      await Posts.deleteOne({ postsId });
+    for (let i=0; i<postsIds.length; i++){
+        if(postsIds[i] === Number(postsId) && postsPws[i] === password){
+            await Posts.deleteOne({ postsId });
+            return res.json({ msg: '삭제 완료🤸' });
+
+        } else if (postsIds[i] === Number(postsId) && postsPws[i] != password){  
+            return res.json({ msg: '비밀번호 불일치🚫' });
+        } 
     }
-
-  res.json({ msg: "Post 삭제완료" });
 });
-
-
-// // 리스트에 posting 추가 (삭제예정)
-// router.post("/posts/:postsId/list", async (req, res) => {
-//     const { postsId } = req.params;
-//     const { quantity } = req.body;
-  
-//     const existsLists = await List.find({ postsId: Number(postsId) });
-//     if (existsLists.length) {
-//       return res.json({ success: false, errorMessage: "이미 리스트에 존재하는 포스트입니다." });
-//     }
-  
-//     await List.create({ postsId: Number(postsId), quantity: quantity });
-//     res.json({ result: "success" });
-// }); 
 
 
 module.exports = router;

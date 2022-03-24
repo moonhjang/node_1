@@ -71,9 +71,9 @@
                                             <textarea class="form-control" id="content" name="content" rows="3">${content}</textarea>
                                         </div>
                                         </div>
-                                        <div class="posting_btn">
-                                        <button type="submit" onclick="editing()" class="btn btn-dark btn-lg"> SAVE </button>
-                                        <button type="submit" onclick="deleting()" class="btn btn-dark btn-lg"> Delete </button> 
+                                        <div class="posting_btns">
+                                          <button type="submit" onclick="editing()" class="btn btn-dark btn-lg"> SAVE </button>
+                                          <button type="submit" onclick="deleting()" class="btn btn-dark btn-lg"> Delete </button> 
                                         </div>
                                     </div>`
             
@@ -104,7 +104,7 @@
 
                 success: function (response) {
                     alert(response["msg"])
-                    // window.location.href="/"
+                    window.location.reload()  
                 }
             });
         }
@@ -113,14 +113,18 @@
             let address = unescape(location.href)
             let param = address.split("/")[5];
 
+            let password = $('#password').val();
+
             $.ajax({
                 type: "DELETE",
                 url: "/api/posts/"+ param,
                 contentType: "application/json",
-                data: {},
+                data: JSON.stringify({
+                      password: password
+                }),
                 success: function (response) {
                     alert(response["msg"])
-                    window.location.href="/"
+                    window.location.reload()
                 }
             });
         }
@@ -158,13 +162,10 @@
             border-radius: 10px;
         }
 
-        .posting_btn {
-            margin: 10px -60px 0px auto;
-            width: 150px;
-            height: auto;
-            
-            border-radius: 7px;
+        .posting_btns {
+            text-align: right;
         }
+
 
       </style>
     </head>

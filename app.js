@@ -3,7 +3,7 @@ const connect = require("./schemas/index.js");
 const cors = require("cors")
 const bodyParser = require("body-parser");
 const app = express();
-const port = 8080;
+const port = 3000;
 
 
 connect();
