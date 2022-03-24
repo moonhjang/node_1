@@ -9,7 +9,7 @@ const postsSchema = new mongoose.Schema({
     user: {
         type: String,
         min: 3,
-        max: 12,
+        max: 10,
         required: true,
     },
     password: {
