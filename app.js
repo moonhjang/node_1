@@ -11,7 +11,7 @@ connect();
 
 const postsRouter = require('./routes/posts');
 
-// 미들웨어 사용 (가장 상위에 위치)
+// 미들웨어 (가장 상위에 위치)
 const requestMiddleware = (req, res, next) => {
     console.log('Request URL:', req.originalUrl, ' - ', new Date());
     next();

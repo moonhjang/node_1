@@ -32,7 +32,6 @@
             contentType: "json",
             data: {},
             success: function (response) {
-                console.log(response)
                 let rows = response
                 for (let i = 0; i < rows.length; i++){
                     let postsId = rows[i]['postsId']
@@ -42,8 +41,6 @@
                     let createdAt = rows[i]['createdAt']
 
                     let date = createdAt.substr(0,10)
-                    
-                    console.log(date)
 
                     let temp_html = `<div class ="posting">
                                         <div class="mb-3 row">
@@ -79,7 +76,6 @@
                                     </div>`
             
                     $('#edit-box').append(temp_html)
-                    console.log(temp_html)
                 }
             }
         });

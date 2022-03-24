@@ -27,9 +27,24 @@ router.post("/posts", async (req, res) => {
     const date = new Date()
     let postsId = date.valueOf();
 
-    await Posts.create({ postsId, user, password, title, content })
-    res.status(200).json({ msg: "저장완료🤸" });
-    
+    //빈칸에 대해 입력 요청하기
+    if (!user){
+        return res.json({ msg: "[USER]를 입력해주세요🙏" })
+    } 
+    if (!password){
+        return res.json({ msg: "[PASSWORD]를 입력해주세요🙏" })
+    }
+    if (!title){
+        return res.json({ msg: "[TITLE]를 입력해주세요🙏" })
+    }
+    if (!content){
+        return res.json({ msg: "[CONTENT]를 입력해주세요🙏" })
+    }
+
+    if (user,password,title,content){
+        await Posts.create({ postsId, user, password, title, content })
+        return res.json({ msg: "저장완료🤸" });
+    }
 });
 
 
@@ -83,9 +98,11 @@ router.get("/posts/:postsId/get", async (req, res) => {
             return res.status(200).json({ msg: '수정 완료🤸' });
 
         } else if (postsIds[i] === Number(postsId) && postsPws[i] != password){ 
-            console.log('비번확인',postsPws[i],password) 
             return res.json({ msg: '비밀번호 불일치🚫' });
-        } 
+
+        } else if (!password){
+            return res.json({ msg: "[PASSWORD]를 입력해주세요🙏" })
+        }
     }
 });
 
@@ -106,6 +123,9 @@ router.delete("/posts/:postsId", async (req, res) => {
 
         } else if (postsIds[i] === Number(postsId) && postsPws[i] != password){  
             return res.json({ msg: '비밀번호 불일치🚫' });
+
+        } else if (!password){
+            return res.json({ msg: "[PASSWORD]를 입력해주세요🙏" })
         } 
     }
 });
