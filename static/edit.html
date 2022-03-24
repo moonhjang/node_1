@@ -6,16 +6,17 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title> Posting | Edit </title>
       
-      <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
-      <script src="//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+      <!-- CSS -->
+      <link rel="stylesheet"  type="text/css" href="/css/style.css">
+      <link rel="icon" href="favicon.ico">
       
-      <!-- 수정필요 -->
-      <!-- <link href="/static/css/main.6842b365.chunk.css" rel="stylesheet">  -->
+      <!-- Font -->
+      <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
 
-      <!-- 부트스트랩 -->
+      <!-- Bootstrap -->
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        
+      
       <script>
       $(document).ready(function() {
         post_edit();
@@ -70,7 +71,7 @@
                                         <div class="col-sm-10">
                                             <textarea class="form-control" id="content" name="content" rows="3">${content}</textarea>
                                         </div>
-                                        </div>
+                                        </div>                                        
                                         <div class="posting_btns">
                                           <button type="submit" onclick="editing()" class="btn btn-dark btn-lg"> SAVE </button>
                                           <button type="submit" onclick="deleting()" class="btn btn-dark btn-lg"> Delete </button> 
@@ -120,7 +121,7 @@
                 url: "/api/posts/"+ param,
                 contentType: "application/json",
                 data: JSON.stringify({
-                      password: password
+                  password: password
                 }),
                 success: function (response) {
                     alert(response["msg"])
@@ -129,50 +130,11 @@
             });
         }
       </script>
-      <style>
-        .background {
-          background-color: rgb(48, 46, 46);
-          width: 100%;
-          height: 20rem;
-
-          color: white;
-          text-align: center;
-          padding-top: 9rem;
-        }
-
-        .find_date {
-          width: 75%;
-
-          margin: 20px auto 0px auto;
-          border-radius: 10px;
-          
-          border:rgb(48, 46, 46);
-          border-width: 2px;
-          padding: 15px; 
-          width: 80%;
-        }
-
-        .posting {
-            width: 80%;
-            margin: 30px auto;
-            padding: 20px;
-            background-color: white;
-
-            border: solid 1px gray;
-            border-radius: 10px;
-        }
-
-        .posting_btns {
-            text-align: right;
-        }
-
-
-      </style>
     </head>
 
     <body>
       <div class="background">
-        <h1>게시글 수정페이지</h1>
+        <h1 onclick="location.href='/'">게시글 수정페이지</h1>
       </div>
     
       <div id="edit-box">

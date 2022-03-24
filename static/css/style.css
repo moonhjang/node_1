@@ -1,0 +1,78 @@
+.background {
+    background-color: rgb(48, 46, 46);
+    width: 100%;
+    height: 20rem;
+  
+    color: white;
+    text-align: center;
+    padding-top: 9rem;
+}
+
+.find_date {
+    width: 75%;
+
+    margin: 20px auto 0px auto;
+    border-radius: 10px;
+    
+    border:rgb(48, 46, 46);
+    border-width: 2px;
+    padding: 15px; 
+    width: 80%;
+  }
+
+.posting {
+    width: 80%;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: white;
+
+    border: solid 1px gray;
+    border-radius: 10px;
+}
+
+.posting_btn {
+    margin: 0px -60px 0px auto;
+    width: 150px;
+    height: auto;
+}
+
+.posting_btns {
+text-align: right;
+}
+
+.labelR {
+    display: inline-block;
+    text-align: left;
+    width: 10%;
+    margin-right: 2.5em;
+}
+
+.labelL {
+    display: inline-block;
+    width: 30%;
+}
+
+.labelL_lg {
+    display: inline-block;
+    width: 75%;
+}
+
+.post_list {
+    width: 95%;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: white;
+
+    border: solid 1px gray;
+    border-radius: 10px;
+  }
+  
+.click {
+color: black;
+}
+
+.click:hover{
+background-color: lightgrey;
+}
+
+

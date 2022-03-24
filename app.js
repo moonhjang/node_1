@@ -8,6 +8,7 @@ const port = 3000;
 
 connect();
 
+
 const postsRouter = require('./routes/posts');
 
 // 미들웨어 사용 (가장 상위에 위치)
