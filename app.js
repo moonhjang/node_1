@@ -1,7 +1,7 @@
 const express = require("express");
 const connect = require("./schemas/index.js");
 const cors = require("cors")
-const bodyParser = require("body-parser");
+const routers = require("./routes")
 const app = express();
 const port = 3000;
 
@@ -9,7 +9,8 @@ const port = 3000;
 connect();
 
 
-const postsRouter = require('./routes/posts');
+// const postsRouter = require('./routes/posts');
+// const usersRouter = require('./routes/user');
 
 // 미들웨어 (가장 상위에 위치)
 const requestMiddleware = (req, res, next) => {
@@ -20,10 +21,12 @@ const requestMiddleware = (req, res, next) => {
 app.use(cors());
 app.use(express.static("static"))
 app.use(express.json());
-app.use(bodyParser.urlencoded({extended: false}));
+
 app.use(requestMiddleware);
 
-app.use('/api', [postsRouter]);
+// app.use('/api', [postsRouter,usersRouter]);
+
+app.use('/api', routers);
 
 //도메인
 app.listen(port, () => {

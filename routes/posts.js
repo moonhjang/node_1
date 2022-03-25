@@ -1,7 +1,6 @@
 const express = require("express");
 const Posts = require("../schemas/posts")
 const router = express.Router();
-const bcrypt = require('bcrypt');  //비밀번호 암호화
 
 
 // /api
