@@ -1,25 +1,17 @@
 const express = require("express");
 const Posts = require("../schemas/posts")
 const router = express.Router();
-
-
-// /api
-// Mainpage(전체조회): DB => 클라이언트에 보내기
-router.get('/', async (req, res) => {
-    const postlist = await Posts.find({}).sort("-createdAt").exec();
-    res.json(postlist);
-});
-
+const authMiddleware = require("../middlewares/auth-middleware");
 
 // Posting(정보등록): 클라이언트에 HTML 연결정보 보내기
-router.get('/posts', (req, res) => {
+router.get('/',authMiddleware,(req, res) => {
     const path = require("path")
     res.sendFile(path.join(__dirname + '/../static/post.html'))
 });
 
 
 // Posting(정보등록): 클라이언트 html에서 입력한 정보 => DB로 보내기
-router.post("/posts", async (req, res) => {
+router.post("/", async (req, res) => {
     const { user, password, title, content } = req.body
 
     //postsId: 날짜기준으로 번호 만들기
@@ -48,7 +40,7 @@ router.post("/posts", async (req, res) => {
 
 
 // detail(상세조회): 클라이언트에 HTML 연결정보 보내기
-router.get('/posts/:postsId', (req, res) => {
+router.get('/:postsId', (req, res) => {
     const path = require("path")
     res.sendFile(path.join(__dirname + '/../static/detail.html'))
 });
@@ -56,7 +48,7 @@ router.get('/posts/:postsId', (req, res) => {
 
 
 // detail(상세조회): DB의 내용가져오기
-router.get('/posts/:postsId/detail', async (req, res) => {
+router.get('/:postsId/detail', async (req, res) => {
     const { postsId } = req.params;
     const existPosts = await Posts.find({ postsId: Number(postsId) });
     res.json(existPosts);
@@ -65,7 +57,7 @@ router.get('/posts/:postsId/detail', async (req, res) => {
 
 
 // detail(상세조회): 클라이언트에 HTML 연결정보 보내기
-router.get('/posts/:postsId/edit', (req, res) => {
+router.get('/:postsId/edit', (req, res) => {
     const path = require("path")
     res.sendFile(path.join(__dirname + '/../static/edit.html'))
 });
@@ -73,7 +65,7 @@ router.get('/posts/:postsId/edit', (req, res) => {
 
 
  // detail > Edit: DB의 내용가져오기
-router.get("/posts/:postsId/get", async (req, res) => {
+router.get("/:postsId/get", async (req, res) => {
     const { postsId } = req.params;
     const existPosts = await Posts.find({ postsId: Number(postsId) });
     res.json(existPosts);
@@ -82,7 +74,7 @@ router.get("/posts/:postsId/get", async (req, res) => {
 
 
  // detail > Edit: DB의 내용 수정하기
- router.put("/posts/:postsId/edit", async (req, res) => {
+ router.put("/:postsId/edit", async (req, res) => {
     const { postsId } = req.params;
     const { password, title, content } = req.body;
 
@@ -106,7 +98,7 @@ router.get("/posts/:postsId/get", async (req, res) => {
 
 
 //  detail > Edit: DB의 삭제하기
-router.delete("/posts/:postsId", async (req, res) => {
+router.delete("/:postsId", async (req, res) => {
     const { postsId } = req.params;
     const { password } = req.body;
 
