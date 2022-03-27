@@ -18,6 +18,37 @@
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
       
       <script>
+          let user;
+          getSelf(function (u) {
+            user = u;
+          });
+
+          $(document).ready(function () {
+          });
+
+          function getSelf(callback) {
+            $.ajax({
+              type: "GET",
+              url: "/api/users/me",
+              headers: {
+                authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+              success: function (response) {
+                callback(response.user);
+              },
+              error: function (xhr, status, error) {
+                if (status == 401) {
+                  alert("로그인이 필요합니다.");
+                } else {
+                  localStorage.clear();
+                  alert("알 수 없는 문제가 발생했습니다. 관리자에게 문의하세요.");
+                }
+                window.location.href = "/";
+              },
+            });
+          }
+
+
           function save_posting() {
             let user = $('#user').val();
             let password = $('#password').val();
@@ -34,19 +65,43 @@
                     title: title,
                     content: content
                 }),
+                // data: {
+                //     user: user,
+                //     password: password,
+                //     title: title,
+                //     content: content
+                // },
 
                 success: function (response) {
                     alert(response["msg"])
-                    window.location.href="/"
-                }
+                    // customAlert(Message)
+                    // window.location.href="/postlist.html"
+                  },
+                error: function (error) {
+                    customAlert(error.responseJSON.errorMessage);
+                },
             });
         }
+
+          function customAlert(text, confirmCallback) {
+            $("#alertText").text(text);
+            $("#alertModal").modal("show");
+            if (confirmCallback) {
+              $("#alertModal .btn-confirm").click(confirmCallback);
+            }
+          }
+
+          function signOut() {
+              localStorage.clear();
+              window.location.href = "/";
+            }
       </script>
     </head>
 
     <body>
       <div class="background">
         <h1 onclick="location.href='/'">게시글 작성페이지</h1>
+        <button type="button" onclick="signOut()" class="btn btn-outline-light">log-Out</button>
       </div>
     
       <div class ="posting">
@@ -81,6 +136,52 @@
         </div>
       </div>
 
+      <!-- custom alarm -->
+      <div
+      class="modal text-left"
+      id="alertModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="alertModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="alertModalLabel">알림</h5>
+          </div>
+          <div class="modal-body" id="alertText">
+            정말로 로그아웃 하시겠습니까?
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-outline-sparta btn-confirm"
+              data-dismiss="modal">
+              확인
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.js"
+      integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+      integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"
+      integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s"
+      crossorigin="anonymous"
+    ></script>
  </body>
 </html>
 

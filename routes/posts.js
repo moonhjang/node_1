@@ -3,12 +3,6 @@ const Posts = require("../schemas/posts")
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth-middleware");
 
-// Posting(정보등록): 클라이언트에 HTML 연결정보 보내기
-router.get('/',authMiddleware,(req, res) => {
-    const path = require("path")
-    res.sendFile(path.join(__dirname + '/../static/post.html'))
-});
-
 
 // Posting(정보등록): 클라이언트 html에서 입력한 정보 => DB로 보내기
 router.post("/", async (req, res) => {
@@ -20,20 +14,28 @@ router.post("/", async (req, res) => {
 
     //빈칸에 대해 입력 요청하기
     if (!user){
-        return res.json({ msg: "이름을 입력해주세요🙏" })
+        res.status(400).send({errorMessage: '이름을 입력해주세요🙏'});
+        return;
     } 
+
     if (!password){
-        return res.json({ msg: "비밀번호를 입력해주세요🙏" })
-    }
+        res.status(400).send({errorMessage: '"비밀번호를 입력해주세요🙏'});
+        return;
+    } 
+
     if (!title){
-        return res.json({ msg: "제목을 입력해주세요🙏" })
-    }
+        res.status(400).send({errorMessage: '제목을 입력해주세요🙏'});
+        return;
+    } 
+
     if (!content){
-        return res.json({ msg: "내용을 입력해주세요🙏" })
-    }
+        res.status(400).send({errorMessage: '내용을 입력해주세요🙏'});
+        return;
+    } 
+
     if (user,password,title,content){
         await Posts.create({ postsId, user, password, title, content })
-        return res.json({ msg: "저장완료🤸" });
+        return res.status(200).send({Message: '저장완료🤸'});
     }
 });
 

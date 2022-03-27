@@ -29,6 +29,9 @@
         $.ajax({
             type: "GET",
             url: "/api/posts/"+ param +"/get",
+            headers: {
+              authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
             contentType: "json",
             data: {},
             success: function (response) {
@@ -125,12 +128,17 @@
                 }
             });
         }
-      </script>
+        function signOut() {
+              localStorage.clear();
+              window.location.href = "/";
+          }
+    </script>
     </head>
 
     <body>
       <div class="background">
         <h1 onclick="location.href='/'">게시글 수정페이지</h1>
+        <button type="button" onclick="signOut()" class="btn btn-outline-light">log-Out</button>
       </div>
     
       <div id="edit-box">

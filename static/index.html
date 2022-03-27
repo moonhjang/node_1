@@ -48,10 +48,11 @@
       });
     }
 
+
     function sign_in() {
       let nickname = $("#inputNickname").val();
       let password = $("#inputPassword").val();
-      console.log(nickname,password  )
+      console.log(nickname,password)
 
       $.ajax({
         type: "POST",
@@ -108,18 +109,18 @@
 
       <div class ="login_box">
         <div class="mb-3 row">
-        <label for="inputNickname" class="col-sm-2 col-form-label">Id</label>
+        <label for="inputNickname" class="col-sm-2 col-form-label">Nickname</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" id="inputNickname" placeholder="아이디" aria-label="Username"
+            <input type="text" class="form-control" id="inputNickname" placeholder="닉네임" aria-label="Username"
            aria-describedby="basic-addon1">
            <!--<small id="nicknameHelp" class="form-text text-muted">닉네임을 입력해주세요.</small>-->
         </div>
       </div>
 
       <div class="mb-3 row">
-        <label for="inputPassword1" class="col-sm-2 col-form-label">Password</label>
+        <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
         <div class="col-sm-10">
-          <input type="password" class="form-control" id="inputPassword1" placeholder="비밀번호">
+          <input type="password" class="form-control" id="inputPassword" placeholder="비밀번호">
         </div>
       </div>
         <div class="posting_btns" > 

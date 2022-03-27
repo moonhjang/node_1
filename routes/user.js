@@ -5,33 +5,36 @@ const router = express.Router();
 const jwt = require("jsonwebtoken")
 const authMiddleware = require("../middlewares/auth-middleware");
 
+const { status } = require("express/lib/response");
+
+
 // Mainpage(전체조회): DB => 클라이언트에 보내기
 router.get('/', async (req, res) => {
     const postlist = await Posts.find({}).sort("-createdAt").exec();
     res.json(postlist);
 });
 
-
+//회원가입: 클라이언트 HTML 보내기
 router.get("/users", (req, res) => {
     const path = require("path")
     res.sendFile(path.join(__dirname + '/../static/signup.html'))
 });
 
-
+// 로그인시, 미들웨어로 회원인식 및 회원으로 입장가능
 router.get("/users/me", authMiddleware, async (req, res) => {
-    // res.status(400).send({});
-    const { user } = res.locals;
-    console.log('middleware ME', user)
+    // const token = req.header("Authorization")
+    const {user} = res.locals; 
     res.send({
-      user,
+        user:{
+            user
+        },
     });
 });
-
 
 //회원가입하기 (joi 필요)
 router.post("/users", async (req, res) => {
     const { nickname, password, confirmPassword} = req.body
-    const is_nickname = /^[-a-zA-Z0-9]{3,10}$/ //닉네임 정규표현식
+    const is_nickname = /^[a-zA-Z0-9]{3,10}$/ //닉네임 정규표현식
 
     if (!(is_nickname.test(nickname))) {
         res.status(400).send({
@@ -70,7 +73,6 @@ router.post("/users", async (req, res) => {
     //위의 사항이 해당되지 않으면 회원가입성공!
     const user = new User({ nickname, password})
     await user.save();
-    console.log("회원가입성공!")
     res.status(201).send({});
 });
 
@@ -83,15 +85,13 @@ router.post("/auth", async (req, res) => {
     const user = await User.findOne({ nickname, password }).exec();
 
     if (!user) {
-        res.status(400).send({errorMessage: '아이디 또는 비밀번호가 잘못되었습니다.'});
+        res.status(400).send({errorMessage: '닉네임 또는 비밀번호를 확인해주세요'});
         return;
+    } else {
+        const token = jwt.sign({ userId: user.userId}, "secretedkey");
+            console.log('B_login-token',token)
+            res.send ({token});
     }
-
-    const token = jwt.sign({ userId: user.userId}, "secretedkey");
-    console.log('login-token',token)
-    res.send({
-        token, 
-    });
 });
 
 

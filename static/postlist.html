@@ -50,8 +50,12 @@
                     }
                 }
             });
-          } 
-      </script>
+          }
+          function signOut() {
+              localStorage.clear();
+              window.location.href = "/";
+            }
+    </script>
     <style>
       .btn{
         align-items: center;
@@ -59,15 +63,18 @@
         justify-content: center;
         margin: 15px auto 0px auto;
       }
+
     </style>
     </head>
 
     <body>
       <div class="background">
-        <h1 onclick="location.href='/'" >전체 게시글 목록 조회 페이지</h1>
+        <h1 onclick="location.href='/'">전체 게시글 목록 조회 페이지</h1>
+        <button type="button" onclick="signOut()" class="btn btn-outline-light">log-Out</button>
       </div>
+
       <div class="btn">
-        <button type="submit" onclick="location.href='/api/posts'" class="btn btn-dark btn-lg"> GO TO POST! </button>
+        <button type="submit" onclick="location.href='/post.html'" class="btn btn-dark btn-lg"> GO TO POST! </button>
       </div>
       <div class="post_list">
         <table class="table" style="margin: 20px auto 20px auto">
