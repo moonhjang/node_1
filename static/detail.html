@@ -20,9 +20,11 @@
 
     <script>
     $(document).ready(function() {
-      post_detail()
+      post_detail();
     });
     
+
+    // Post, Comment 조회
     function post_detail() {
       let address = unescape(location.href)
       let param = address.split("/")[5];
@@ -32,6 +34,7 @@
           url: '/api/posts/'+param +'/detail',
           contentType: "json",
           data: {},
+          async: false,
           success: function (response) {
               console.log(response)
               let rows = response
@@ -78,39 +81,32 @@
                               </div>
                             </div>`
 
+                      if (comments.length > 0){
+                          for (let j=0; j< comments.length; j++){
+                              let nickname = comments[j]['nickname']
+                              let comment = comments[j]['content']
 
-                  if (comments.length != 0){
-                      for (let i=0; i< comments.length; i++){
-                          let nickname = comments[i]['nickname']
-                          let comment = comments[i]['content']
-                          console.log(nickname, comment)
+                              let temp_html_cmt = `<tr id="word-word">
+                                              <th scope="col" style="width: 200px;" id="cmt_nickname">${nickname}</td>
+                                              <td id="cmt_content">${comment}</td>
+                                              <td style="width: 80px;"><button type="submit" onclick="edit_comment()" class="btn btn-light"> EDIT </button></td>
+                                              <td style="width: 80px;"><button type="submit" onclick="delete_comment()" class="btn btn-light"> DELETE </button></td>   
+                                              </tr>`
+                  
+                              $('#comment-box').append(temp_html_cmt)}}
 
-                          let temp_html_cmt = `<tr id="word-word">
-                                          <th scope="col" style="width: 200px;">${nickname}</td>
-                                          <td>${content}</td>
-                                          <td style="width: 80px;"><button type="submit" onclick="edit_comment()" class="btn btn-light"> EDIT </button></td>
-                                          <td style="width: 80px;"><button type="submit" onclick="edit_comment()" class="btn btn-light"> DELETE </button></td>   
-                                          </tr>`
-
-                          $('#comment-box').append(temp_html_cmt)
-                      }   
-                      
-                  }
-                          
-                                                     
-                  $('#detail-box').append(temp_html)
-              }
-          }
+                  $('#detail-box').append(temp_html)}
+            }       
       });
-    } 
- 
+    }; 
     
+
     //Comment 작성
     function save_comment() {
         let address = unescape(location.href)
         let param = address.split("/")[5];
 
-        let content = $('#cmt_content').val();
+        let content = $('#inputContent').val();
 
         $.ajax({
             type: "POST",
@@ -133,10 +129,40 @@
     }
 
     //Comment 수정
+    function edit_comment() {
+        let address = unescape(location.href)
+        let param = address.split("/")[5];
 
+        let content = $('#cmt_content').val();
+        let nickname = $('#cmt_nickname').val();
+
+        $.ajax({
+            type: "PUT",
+            url: "/api/comments/"+ param,
+            headers: {
+                authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            contentType: "application/json",
+            data: JSON.stringify({
+                nickname: nickname,
+                content: content
+            }),
+            success: function (response) {
+                console.log(response)
+                alert(response["msg"])
+                window.location.reload()  
+            },
+            error: function (error) {
+                customAlert(error.responseJSON.errorMessage);
+            },
+        });
+    }
 
 
     //Comment 삭제 
+
+
+    //Alert
     function customAlert(text, confirmCallback) {
         $("#alertText").text(text);
         $("#alertModal").modal("show");
@@ -174,7 +200,7 @@
           <div class="mb-3 row">
           <label for="inputContent" class="col-sm-2 col-form-label">CONTENT</label>
           <div class="col-lg-10">
-              <textarea class="form-control" id="cmt_content" rows="1"></textarea>
+              <textarea class="form-control" id="inputContent" rows="1"></textarea>
           </div>
           </div>                                        
           <div class="posting_btns">

@@ -161,65 +161,6 @@
         });
     }
 
-    //Comment 조회
-    function get_comment() {
-    let address = unescape(location.href)
-    let param = address.split("/")[5];
-
-    $.ajax({
-        type: "GET",
-        url: "/api/posts/"+ param +"/comment",
-        contentType: "json",
-        data: {},
-        success: function (response) {
-            let rows = response  
-            for (let i = 0; i < rows.length; i++){
-                let nickname = rows[i]['']
-                let content = rows[i]['content']
-
-                let temp_html = `<tr id="word-word" class="click" onclick = "location.href='/api/posts/${postsId}'">
-                                    <th scope="col">${nickname}</th>
-                                    <td>${content}</td>    
-                                </tr>`
-
-                $('#comment-box').append(temp_html)                 
-            }
-        }
-    });
-    }    
-    
-    
-    //Comment 작성
-    function save_comment() {
-        let address = unescape(location.href)
-        let param = address.split("/")[5];
-
-        let content = $('#cmt_content').val();
-
-        $.ajax({
-            type: "POST",
-            url: "/api/comments/"+ param,
-            contentType: "application/json",
-            headers: {
-            authorization: `Bearer ${localStorage.getItem("token")}`},
-            data: JSON.stringify({
-                content: content,
-            }),
-            success: function (response) {
-                alert(response["Message"])
-                // customAlert(Message)
-                // window.location.href="/postlist.html"
-                },
-            error: function (error) {
-                customAlert(error.responseJSON.errorMessage);
-            },
-        });
-    }
-
-    //Comment 수정
-
-    //Comment 삭제
-
     //Alart
     function customAlert(text, confirmCallback) {
         $("#alertText").text(text);
