@@ -23,7 +23,7 @@ router.get("/users", (req, res) => {
 // 로그인시, 미들웨어로 회원인식 및 회원으로 입장가능
 router.get("/users/me", authMiddleware, async (req, res) => {
     // const token = req.header("Authorization")
-    const {user} = res.locals; 
+    const {user} = res.locals;
     res.send({
         user:{
             user
@@ -83,13 +83,15 @@ router.post("/auth", async (req, res) => {
     const {nickname, password} = req.body;
 
     const user = await User.findOne({ nickname, password }).exec();
+    console.log('user', user.password)
 
     if (!user) {
         res.status(400).send({errorMessage: '닉네임 또는 비밀번호를 확인해주세요'});
         return;
     } else {
-        const token = jwt.sign({ userId: user.userId}, "secretedkey");
+        const token = jwt.sign({ nickname : user.nickname}, "secretedkey");
             console.log('B_login-token',token)
+            console.log('user', user.nickname)
             res.send ({token});
     }
 });
