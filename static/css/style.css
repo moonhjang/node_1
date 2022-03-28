@@ -66,6 +66,16 @@ text-align: right;
     border: solid 1px gray;
     border-radius: 10px;
   }
+
+.comment_list {
+width: 80%;
+margin: 30px auto;
+padding: 20px;
+background-color: white;
+
+/* border: solid 1px gray;
+border-radius: 10px; */
+}
   
 .click {
 color: black;

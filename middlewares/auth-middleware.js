@@ -25,7 +25,6 @@ module.exports = (req, res, next) => {
         const { nickname } = jwt.verify(authToken, "secretedkey"); 
             res.locals.nickname = nickname.split(' ');
             console.log('b')
-            console.log(res.locals.nickname)
             next();
         } catch (err) {
         console.log('c')    

@@ -1,99 +1,236 @@
 <!doctype html>
 <html lang="en">
-    <head>
-      <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title> Posting | Detail </title>
-      
-      <!-- CSS -->
-      <link rel="stylesheet"  type="text/css" href="/css/style.css">
-      <link rel="icon" href="favicon.ico">
-      
-      <!-- Font -->
-      <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Posting | Detail </title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet"  type="text/css" href="/css/style.css">
+    <link rel="icon" href="favicon.ico">
+    
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
 
-      <!-- Bootstrap -->
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-      
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
 
-      <script>
-        $(document).ready(function() {
-          post_detail();
-        });
-        
-        function post_detail() {
-          let address = unescape(location.href)
-          let param = address.split("/")[5];
+    <script>
+    $(document).ready(function() {
+      post_detail()
+    });
+    
+    function post_detail() {
+      let address = unescape(location.href)
+      let param = address.split("/")[5];
 
-          $.ajax({
-              type: "GET",
-              url: '/api/posts/'+param +'/detail',
-              contentType: "json",
-              data: {},
-              success: function (response) {
-                  let rows = response
-                  for (let i = 0; i < rows.length; i++){
-                      let postsId = rows[i]['postsId']
-                      let user = rows[i]['user']
-                      let title = rows[i]['title']
-                      let content = rows[i]['content']
-                      let createdAt = rows[i]['createdAt']
+      $.ajax({
+          type: "GET",
+          url: '/api/posts/'+param +'/detail',
+          contentType: "json",
+          data: {},
+          success: function (response) {
+              console.log(response)
+              let rows = response
+              for (let i = 0; i < rows.length; i++){
+                  let postsId = rows[i]['postsId']
+                  let user = rows[i]['user']
+                  let title = rows[i]['title']
+                  let content = rows[i]['content']
+                  let createdAt = rows[i]['createdAt']
+                  let comments = rows[i]['comments']
+                  console.log(comments.length === 0)
 
-                      let date = createdAt.substr(0,10)
+                  let date = createdAt.substr(0,10)
 
-                      let temp_html =  
-        `<div class ="posting">
-          <div class="labelR">
-              <p>USER</p>
-            </div>
-          <div class="labelL">
-            <p><b>${user}</b></p>
-          </div>
-          <div class="labelR">
-            <p>DATE</p>
-          </div>
-          <div class="labelL">
-            <p><b>${date}</b></p>
-          </div>
-          <hr>
-          <div class="labelR">
-            <p>TITLE</p>
-          </div>
-          <div class="labelL_lg">
-            <p><b>${title}</b></p>
-          </div>
-          <div class="labelR">
-            <p>CONTENT</p>
-          </div>
-          <div class="labelL_lg">
-            <p><b>${content}</b></p>
-          </div> 
-          <hr>
-          <div class="posting_btn">
-            <button onclick="location.href='/api/posts/${postsId}/edit'" class="btn btn-dark btn-lg"> EDIT </button>
-          </div>
-        </div>`
+                  temp_html =`<div class ="posting">
+                              <div class="labelR">
+                                  <p>USER</p>
+                                </div>
+                              <div class="labelL">
+                                <p><b>${user}</b></p>
+                              </div>
+                              <div class="labelR">
+                                <p>DATE</p>
+                              </div>
+                              <div class="labelL">
+                                <p><b>${date}</b></p>
+                              </div>
+                              <hr>
+                              <div class="labelR">
+                                <p>TITLE</p>
+                              </div>
+                              <div class="labelL_lg">
+                                <p><b>${title}</b></p>
+                              </div>
+                              <div class="labelR">
+                                <p>CONTENT</p>
+                              </div>
+                              <div class="labelL_lg">
+                                <p><b>${content}</b></p>
+                              </div> 
+                              <hr>
+                              <div class="posting_btn">
+                                <button onclick="location.href='/api/posts/${postsId}/edit'" class="btn btn-dark btn-lg"> EDIT </button>
+                              </div>
+                            </div>`
 
 
-                      $('#detail-box').append(temp_html)
-                }
+                  if (comments.length != 0){
+                      for (let i=0; i< comments.length; i++){
+                          let nickname = comments[i]['nickname']
+                          let comment = comments[i]['content']
+                          console.log(nickname, comment)
+
+                          let temp_html_cmt = `<tr id="word-word">
+                                          <th scope="col" style="width: 200px;">${nickname}</td>
+                                          <td>${content}</td>
+                                          <td style="width: 80px;"><button type="submit" onclick="edit_comment()" class="btn btn-light"> EDIT </button></td>
+                                          <td style="width: 80px;"><button type="submit" onclick="edit_comment()" class="btn btn-light"> DELETE </button></td>   
+                                          </tr>`
+
+                          $('#comment-box').append(temp_html_cmt)
+                      }   
+                      
+                  }
+                          
+                                                     
+                  $('#detail-box').append(temp_html)
               }
-          });
-        } 
-      </script>
-    </head>
+          }
+      });
+    } 
+ 
+    
+    //Comment 작성
+    function save_comment() {
+        let address = unescape(location.href)
+        let param = address.split("/")[5];
 
-    <body>
-      <div onclick="location.href='/'" class="background">
+        let content = $('#cmt_content').val();
+
+        $.ajax({
+            type: "POST",
+            url: "/api/comments/"+ param,
+            contentType: "application/json",
+            headers: {
+            authorization: `Bearer ${localStorage.getItem("token")}`},
+            data: JSON.stringify({
+                content: content,
+            }),
+            success: function (response) {
+                alert(response["Message"])
+                // customAlert(Message)
+                // window.location.href="/postlist.html"
+                },
+            error: function (error) {
+                customAlert(error.responseJSON.errorMessage);
+            },
+        });
+    }
+
+    //Comment 수정
+
+
+
+    //Comment 삭제 
+    function customAlert(text, confirmCallback) {
+        $("#alertText").text(text);
+        $("#alertModal").modal("show");
+        if (confirmCallback) {
+            $("#alertModal .btn-confirm").click(confirmCallback);
+        }
+    }
+    
+    </script>
+      
+</head>
+
+<body>
+    <div onclick="location.href='/'" class="background">
         <h1>게시글 조회페이지</h1>
+        </div>
+
+        <div id= "detail-box">
+        </div>
+
+        <div class="comment_list">
+            <table class="table" style="margin: 20px auto 20px auto">
+            <thead class="thead-light">
+                <tr>
+                    <!-- <th scope="col" style="width: 200px;">NICKNAME</th>
+                    <th scope="col">COMMENT</th>                            -->
+                </tr>
+            </thead>
+            <tbody id="comment-box">
+            </tbody>
+          </table>  
+      </div>
+  
+      <div class ="posting">
+          <div class="mb-3 row">
+          <label for="inputContent" class="col-sm-2 col-form-label">CONTENT</label>
+          <div class="col-lg-10">
+              <textarea class="form-control" id="cmt_content" rows="1"></textarea>
+          </div>
+          </div>                                        
+          <div class="posting_btns">
+              <button type="submit" onclick="save_comment()" class="btn btn-dark btn-lg"> SAVE </button>
+              <!-- <button type="submit" onclick="deleting()" class="btn btn-outline-dark btn-lg"> Delete </button>  -->
+          </div>
       </div>
 
-      <div id= "detail-box">
-      </div>
 
-    </body>
+    <!-- custom alarm -->
+    <div
+    class="modal text-left"
+    id="alertModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="alertModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="alertModalLabel">알림</h5>
+        </div>
+        <div class="modal-body" id="alertText">
+          정말로 로그아웃 하시겠습니까?
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-outline-sparta btn-confirm"
+            data-dismiss="modal">
+            확인
+          </button>
+        </div>
+      </div>
+    </div>
+    </div>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script
+    src="https://code.jquery.com/jquery-3.5.1.js"
+    integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+    crossorigin="anonymous"
+    ></script>
+    <script
+    src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+    crossorigin="anonymous"
+    ></script>
+    <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"
+    integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s"
+    crossorigin="anonymous"
+    ></script>
+</body>
 </html>
 
 

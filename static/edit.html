@@ -1,175 +1,238 @@
 <!doctype html>
 <html lang="en">
-    <head>
-      <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title> Posting | Edit </title>
-      
-      <!-- CSS -->
-      <link rel="stylesheet"  type="text/css" href="/css/style.css">
-      <link rel="icon" href="favicon.ico">
-      
-      <!-- Font -->
-      <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Posting | Edit </title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet"  type="text/css" href="/css/style.css">
+    <link rel="icon" href="favicon.ico">
+    
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
 
-      <!-- Bootstrap -->
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
       
-      <script>
-        let user;
-        getSelf(function (u) {
-        user = u;
+    <script>
+    let user;
+    getSelf(function (u) {
+    user = u;
+    });
+
+    $(document).ready(function () {
+        get_post();
+    });
+
+    function getSelf(callback) {
+        $.ajax({
+            type: "GET",
+            url: "/api/users/me",
+            headers: {
+            authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            success: function (response) {
+            callback(response.user);
+            },
+            error: function (error) {
+            customAlert(error.responseJSON.errorMessage);
+            },
         });
-
-        $(document).ready(function () {
-            post_edit();
-        });
-
-        function getSelf(callback) {
-            $.ajax({
-              type: "GET",
-              url: "/api/users/me",
-              headers: {
-                authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-              success: function (response) {
-                callback(response.user);
-              },
-              error: function (xhr, status, error) {
-                  console.log('여기야!')
-                customAlert(error.responseJSON.errorMessage);
-              },
-            });
-          }
+        }
       
-      function post_edit() {
+
+    //Post조회
+    function get_post() {
+    let address = unescape(location.href)
+    let param = address.split("/")[5];
+
+    $.ajax({
+        type: "GET",
+        url: "/api/posts/"+ param +"/get",
+        contentType: "json",
+        data: {},
+        success: function (response) {
+            let rows = response
+            for (let i = 0; i < rows.length; i++){
+                let postsId = rows[i]['postsId']
+                let user = rows[i]['user']
+                let title = rows[i]['title']
+                let content = rows[i]['content']
+                let createdAt = rows[i]['createdAt']
+
+                let date = createdAt.substr(0,10)
+
+                let temp_html = `<div class ="posting">
+                                    <div class="mb-3 row">
+                                    <label for="inputUser" class="col-sm-2 col-form-label">USER</label>
+                                    <div class="col-sm-10">
+                                        ${user}
+                                    </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                    <label for="inputPassword" class="col-sm-2 col-form-label">PASSWORD</label>
+                                    <div class="col-sm-10">
+                                        <input type="password" class="form-control" id="password" name="password">
+                                    </div>        
+                                    </div>
+                                    <div style="height: 10px;"></div>
+                                    <hr> 
+                                    <div class="mb-3 row">
+                                    <label for="inputTitle" class="col-sm-2 col-form-label">TITLE</label>
+                                    <div class="col-sm-10">
+                                        <textarea class="form-control" id="title" name="title" rows="1">${title}</textarea>
+                                    </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                    <label for="inputContent" class="col-sm-2 col-form-label">CONTENT</label>
+                                    <div class="col-sm-10">
+                                        <textarea class="form-control" id="content" name="content" rows="3">${content}</textarea>
+                                    </div>
+                                    </div>                                        
+                                    <div class="posting_btns">
+                                        <button type="submit" onclick="editing()" class="btn btn-dark btn-lg"> SAVE </button>
+                                        <button type="submit" onclick="deleting()" class="btn btn-outline-dark btn-lg"> Delete </button> 
+                                    </div>
+                                </div>`
+        
+                $('#edit-box').append(temp_html)
+            }
+        }
+    });
+    } 
+
+    //Post수정
+    function editing() {
         let address = unescape(location.href)
         let param = address.split("/")[5];
 
+        let password = $('#password').val();
+        let title = $('#title').val();
+        let content = $('#content').val();
+
         $.ajax({
-            type: "GET",
-            url: "/api/posts/"+ param +"/get",
-            contentType: "json",
-            data: {},
+            type: "PUT",
+            url: "/api/posts/"+ param +"/edit",
+            headers: {
+                authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            contentType: "application/json",
+            data: JSON.stringify({
+                password: password,
+                title: title,
+                content: content
+            }),
             success: function (response) {
-                let rows = response
-                for (let i = 0; i < rows.length; i++){
-                    let postsId = rows[i]['postsId']
-                    let user = rows[i]['user']
-                    let title = rows[i]['title']
-                    let content = rows[i]['content']
-                    let createdAt = rows[i]['createdAt']
-
-                    let date = createdAt.substr(0,10)
-
-                    let temp_html = `<div class ="posting">
-                                        <div class="mb-3 row">
-                                        <label for="inputUser" class="col-sm-2 col-form-label">USER</label>
-                                        <div class="col-sm-10">
-                                            ${user}
-                                        </div>
-                                        </div>
-                                        <div class="mb-3 row">
-                                        <label for="inputPassword" class="col-sm-2 col-form-label">PASSWORD</label>
-                                        <div class="col-sm-10">
-                                            <input type="password" class="form-control" id="password" name="password">
-                                        </div>        
-                                        </div>
-                                        <div style="height: 10px;"></div>
-                                        <hr> 
-                                        <div class="mb-3 row">
-                                        <label for="inputTitle" class="col-sm-2 col-form-label">TITLE</label>
-                                        <div class="col-sm-10">
-                                            <textarea class="form-control" id="title" name="title" rows="1">${title}</textarea>
-                                        </div>
-                                        </div>
-                                        <div class="mb-3 row">
-                                        <label for="inputContent" class="col-sm-2 col-form-label">CONTENT</label>
-                                        <div class="col-sm-10">
-                                            <textarea class="form-control" id="content" name="content" rows="3">${content}</textarea>
-                                        </div>
-                                        </div>                                        
-                                        <div class="posting_btns">
-                                          <button type="submit" onclick="editing()" class="btn btn-dark btn-lg"> SAVE </button>
-                                          <button type="submit" onclick="deleting()" class="btn btn-outline-dark btn-lg"> Delete </button> 
-                                        </div>
-                                    </div>`
-            
-                    $('#edit-box').append(temp_html)
-                }
-            }
+                alert(response["msg"])
+                window.location.reload()  
+            },
+            error: function (error) {
+                customAlert(error.responseJSON.errorMessage);
+            },
         });
-      } 
+    }
     
-        function editing() {
-            let address = unescape(location.href)
-            let param = address.split("/")[5];
+    //Post삭제
+    function deleting() {
+        let address = unescape(location.href)
+        let param = address.split("/")[5];
 
-            let password = $('#password').val();
-            let title = $('#title').val();
-            let content = $('#content').val();
+        let password = $('#password').val();
 
-            $.ajax({
-                type: "PUT",
-                url: "/api/posts/"+ param +"/edit",
-                headers: {
-                    authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-                contentType: "application/json",
-                data: JSON.stringify({
-                    password: password,
-                    title: title,
-                    content: content
-                }),
-                success: function (response) {
-                    alert(response["msg"])
-                    window.location.reload()  
-                },
-                error: function (error) {
-                    customAlert(error.responseJSON.errorMessage);
-                },
-            });
-        }
-        
-        function deleting() {
-            let address = unescape(location.href)
-            let param = address.split("/")[5];
+        $.ajax({
+            type: "DELETE",
+            url: "/api/posts/"+ param,
+            contentType: "application/json",
+            headers: {
+            authorization: `Bearer ${localStorage.getItem("token")}`},
+            data: JSON.stringify({
+                password: password
+            }),
+            success: function (response) {
+                alert(response["msg"])
+                window.location.reload()
+            },
+            error: function (error) {
+                customAlert(error.responseJSON.errorMessage);
+            },
+        });
+    }
 
-            let password = $('#password').val();
+    //Comment 조회
+    function get_comment() {
+    let address = unescape(location.href)
+    let param = address.split("/")[5];
 
-            $.ajax({
-                type: "DELETE",
-                url: "/api/posts/"+ param,
-                contentType: "application/json",
-                headers: {
-                authorization: `Bearer ${localStorage.getItem("token")}`},
-                data: JSON.stringify({
-                  password: password
-                }),
-                success: function (response) {
-                    alert(response["msg"])
-                    window.location.reload()
-                },
-                error: function (error) {
-                    customAlert(error.responseJSON.errorMessage);
-                },
-            });
-        }
+    $.ajax({
+        type: "GET",
+        url: "/api/posts/"+ param +"/comment",
+        contentType: "json",
+        data: {},
+        success: function (response) {
+            let rows = response  
+            for (let i = 0; i < rows.length; i++){
+                let nickname = rows[i]['']
+                let content = rows[i]['content']
 
-        function customAlert(text, confirmCallback) {
-            $("#alertText").text(text);
-            $("#alertModal").modal("show");
-            if (confirmCallback) {
-              $("#alertModal .btn-confirm").click(confirmCallback);
+                let temp_html = `<tr id="word-word" class="click" onclick = "location.href='/api/posts/${postsId}'">
+                                    <th scope="col">${nickname}</th>
+                                    <td>${content}</td>    
+                                </tr>`
+
+                $('#comment-box').append(temp_html)                 
             }
-          }    
+        }
+    });
+    }    
+    
+    
+    //Comment 작성
+    function save_comment() {
+        let address = unescape(location.href)
+        let param = address.split("/")[5];
 
-        function signOut() {
-              localStorage.clear();
-              window.location.href = "/";
-          }
+        let content = $('#cmt_content').val();
+
+        $.ajax({
+            type: "POST",
+            url: "/api/comments/"+ param,
+            contentType: "application/json",
+            headers: {
+            authorization: `Bearer ${localStorage.getItem("token")}`},
+            data: JSON.stringify({
+                content: content,
+            }),
+            success: function (response) {
+                alert(response["Message"])
+                // customAlert(Message)
+                // window.location.href="/postlist.html"
+                },
+            error: function (error) {
+                customAlert(error.responseJSON.errorMessage);
+            },
+        });
+    }
+
+    //Comment 수정
+
+    //Comment 삭제
+
+    //Alart
+    function customAlert(text, confirmCallback) {
+        $("#alertText").text(text);
+        $("#alertModal").modal("show");
+        if (confirmCallback) {
+            $("#alertModal .btn-confirm").click(confirmCallback);
+        }
+        }    
+
+    function signOut() {
+            localStorage.clear();
+            window.location.href = "/";
+        }
     </script>
     </head>
 
@@ -181,7 +244,7 @@
     
       <div id="edit-box">
       </div>
-      
+
       <!-- custom alarm -->
       <div
       class="modal text-left"

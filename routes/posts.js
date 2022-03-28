@@ -1,5 +1,6 @@
 const express = require("express");
 const Posts = require("../schemas/posts")
+const User = require("../schemas/user");
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth-middleware");
 
@@ -41,7 +42,7 @@ router.post("/", authMiddleware, async (req, res) => {
 
 
 
-// detail(상세조회): 클라이언트에 HTML 연결정보 보내기
+// Posting detail(상세조회): 클라이언트에 HTML 연결정보 보내기
 router.get('/:postsId', (req, res) => {
     const path = require("path")
     res.sendFile(path.join(__dirname + '/../static/detail.html'))
@@ -49,7 +50,7 @@ router.get('/:postsId', (req, res) => {
 
 
 
-// detail(상세조회): DB의 내용가져오기
+// Posting detail(상세조회): DB의 내용가져오기
 router.get('/:postsId/detail', async (req, res) => {
     const { postsId } = req.params;
     const existPosts = await Posts.find({ postsId: Number(postsId) });
@@ -58,7 +59,7 @@ router.get('/:postsId/detail', async (req, res) => {
 
 
 
-// detail(상세조회): 클라이언트에 HTML 연결정보 보내기
+// Posting detail(상세조회): 클라이언트에 HTML 연결정보 보내기
 router.get('/:postsId/edit', (req, res) => {
     const path = require("path")
     res.sendFile(path.join(__dirname + '/../static/edit.html'))
@@ -66,7 +67,7 @@ router.get('/:postsId/edit', (req, res) => {
 
 
 
- // detail > Edit: DB의 내용가져오기
+ // Posting: detail > Edit: DB의 내용가져오기
 router.get("/:postsId/get", async (req, res) => {
     const { postsId } = req.params;
     const existPosts = await Posts.find({ postsId: Number(postsId) });
@@ -75,7 +76,7 @@ router.get("/:postsId/get", async (req, res) => {
 
 
 
- // detail > Edit: DB의 내용 수정하기
+ // Posting: detail > Edit: DB의 내용 수정하기
  router.put("/:postsId/edit",authMiddleware, async (req, res) => {
     const { postsId } = req.params;
     const { password, title, content } = req.body;
@@ -99,7 +100,7 @@ router.get("/:postsId/get", async (req, res) => {
 });
 
 
-//  detail > Edit: DB의 삭제하기
+// Posting: detail > Edit: DB의 삭제하기
 router.delete("/:postsId",authMiddleware, async (req, res) => {
     const { postsId } = req.params;
     const { password } = req.body;

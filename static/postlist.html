@@ -18,43 +18,45 @@
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
       
       <script>
-          $(document).ready(function() {
-            post_list();
-          });
-          
-          function post_list() {
-            $.ajax({
-                type: "GET",
-                url: "/api",
-                contentType: "json",
-                data: {},
-                success: function (response) {
-                    let rows = response  
-                    for (let i = 0; i < rows.length; i++){
-                      let postsId = rows[i]['postsId']
-                      let user = rows[i]['user']
-                      let title = rows[i]['title']
-                      let content = rows[i]['content']
-                      let createdAt = rows[i]['createdAt']
+      $(document).ready(function() {
+        post_list();
+      });
+      
+      function post_list() {
+        $.ajax({
+            type: "GET",
+            url: "/api",
+            contentType: "json",
+            data: {},
+            success: function (response) {
+                let rows = response  
+                for (let i = 0; i < rows.length; i++){
+                  let postsId = rows[i]['postsId']
+                  let user = rows[i]['user']
+                  let title = rows[i]['title']
+                  let content = rows[i]['content']
+                  let createdAt = rows[i]['createdAt']
 
-                      let date = createdAt.substr(0,10)
+                  let date = createdAt.substr(0,10)
 
-                      let temp_html = `<tr id="word-word" class="click" onclick = "location.href='/api/posts/${postsId}'">
-                                          <th scope="col"> ${date}</th>  
-                                          <th scope="col">${user}</th>
-                                          <td>${title}</td>
-                                          <td>${content}</td>    
-                                        </tr>`
+                  let temp_html = `<tr id="word-word" class="click" onclick = "location.href='/api/posts/${postsId}'">
+                                      <th scope="col"> ${date}</th>  
+                                      <th scope="col">${user}</th>
+                                      <td>${title}</td>
+                                      <td>${content}</td>    
+                                    </tr>`
 
-                      $('#tbody-box').append(temp_html)                 
-                    }
+                  $('#tbody-box').append(temp_html)                 
                 }
-            });
-          }
-          function signOut() {
-              localStorage.clear();
-              window.location.href = "/";
             }
+        });
+      }
+
+    function signOut() {
+        localStorage.clear();
+        window.location.href = "/";
+      }
+      
     </script>
     <style>
       .btn{

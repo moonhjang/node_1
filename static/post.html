@@ -36,14 +36,14 @@
               success: function (response) {
                 callback(response.user);
               },
-              error: function (xhr, status, error) {
+              error: function (error) {
                 customAlert(error.responseJSON.errorMessage);
               },
             });
           }
 
 
-          function save_posting() {
+        function save_posting() {
             let user = $('#user').val();
             let password = $('#password').val();
             let title = $('#title').val();
@@ -72,18 +72,18 @@
             });
         }
 
-          function customAlert(text, confirmCallback) {
+        function customAlert(text, confirmCallback) {
             $("#alertText").text(text);
             $("#alertModal").modal("show");
             if (confirmCallback) {
               $("#alertModal .btn-confirm").click(confirmCallback);
             }
-          }
+        }
 
-          function signOut() {
-              localStorage.clear();
-              window.location.href = "/";
-            }
+        function signOut() {
+            localStorage.clear();
+            window.location.href = "/";
+          }
       </script>
     </head>
 
