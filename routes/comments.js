@@ -2,20 +2,19 @@ const express = require("express");
 const Posts = require("../schemas/posts");
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth-middleware");
-const req = require("express/lib/request");
 
 // Comment 조회
 router.get('/:postsId', async (req, res) => {
     const { postsId } = req.params;
-    const existPosts = await Posts.find({ postsId: Number(postsId) });
+    const existPosts = await Posts.find({ postsId: Number(postsId)})
     res.json(existPosts);
 });
 
 // Comment 작성
 router.post("/:postsId", authMiddleware, async (req, res) => {
     const { postsId } = req.params;
-    const {content} = req.body
-    const nickname = res.locals.nickname+'';
+    const {nickname, content} = req.body
+    
     const post = await Posts.findOne ({ postsId : Number(postsId)})
 
     //Commentid: 날짜기준으로 번호 만들기
@@ -31,10 +30,11 @@ router.post("/:postsId", authMiddleware, async (req, res) => {
         post.comments.push({
             commentid: commentid,
             nickname: nickname,
-            content: content
+            content: content,
+            createdAt: date,
         })
         await post.save()
-        return res.status(200).send({Message: '저장완료🤸'});
+        return res.status(200).send({});
     }
 });
 
@@ -48,9 +48,9 @@ router.patch("/:postsId/:commentId", authMiddleware, async (req, res) => {
         await Posts.updateOne(
         { postsId : Number(postsId), "comments.commentid": Number(commentId)},
         { $set: {"comments.$.content": content} });
-        return res.status(200).send({Message: '저장완료🤸'});
+        return res.status(200).send({});
     } catch (error) {
-        return res.status(400).send({Message: '저장실패!'});
+        return res.status(400).send({});
     }
 });
 

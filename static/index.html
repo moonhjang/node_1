@@ -63,7 +63,6 @@
           password: password,
         }),
         success: function (response) {
-          console.log('login4')
           localStorage.setItem("token", response.token);
           localStorage.setItem("nickname", nickname);
           window.location.replace("/postlist.html");

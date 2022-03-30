@@ -1,9 +1,11 @@
 const express = require("express");
+const crypo = require("crypto")
+const jwt = require("jsonwebtoken")
+const router = express.Router();
 const User = require("../schemas/user");
 const Posts = require("../schemas/posts");
-const router = express.Router();
-const jwt = require("jsonwebtoken")
 const authMiddleware = require("../middlewares/auth-middleware");
+
 
 const { status } = require("express/lib/response");
 
@@ -36,7 +38,7 @@ router.post("/users", async (req, res) => {
     const { nickname, password, confirmPassword} = req.body
     const is_nickname = /^[a-zA-Z0-9]{3,10}$/ //닉네임 정규표현식
     const existUsers_len = (await User.find({})).length
-    const userId = existUsers_len +1
+
 
     if (!(is_nickname.test(nickname))) {
         res.status(400).send({
@@ -49,6 +51,14 @@ router.post("/users", async (req, res) => {
     if (password != confirmPassword) {
         res.status(400).send({
              errorMessage: "비밀번호가 일치하지 않습니다."
+        });
+        return; 
+    }
+
+     //비밀번호와 비밀번호 재입력이 같은지 확인
+     if (password.length < 4) {
+        res.status(400).send({
+             errorMessage: "비밀번호는 4자이상으로 만들주세요."
         });
         return; 
     }
@@ -73,7 +83,7 @@ router.post("/users", async (req, res) => {
     }
 
     //위의 사항이 해당되지 않으면 회원가입성공!
-    const user = new User({ userId, nickname, password})
+    const user = new User({ nickname, password})
     await user.save();
     res.status(201).send({});
 });
@@ -90,7 +100,7 @@ router.post("/auth", async (req, res) => {
         res.status(400).send({errorMessage: '닉네임 또는 비밀번호를 확인해주세요'});
         return;
     } else {
-        const token = jwt.sign({ nickname : user.nickname, userid: user.userId}, "secretedkey");
+        const token = jwt.sign({ nickname : user.nickname}, "secretedkey");
             console.log('B_login-token',token)
             console.log('user', user.nickname)
             res.send ({token});

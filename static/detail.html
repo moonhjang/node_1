@@ -19,11 +19,25 @@
     
 
     <script>
-    let user;
-    getSelf(function (u) {
-      user = u;
-      userId = localStorage.getItem("nickname")
-      comment_list()
+    // let user;
+    // getSelf(function (u) {
+    //   user = u;
+    //   userId = localStorage.getItem("nickname")
+    //   comment_list()
+    // });
+
+    let userId;
+    $(document).ready(function () {
+        post_detail()
+        userId = localStorage.getItem("nickname")
+        // 비회원, 회원 전부 볼 수 있어야하기 때문에 에러가 발생하지 않아야한다.
+        if (localStorage.getItem("token")) {
+            getSelf(function (u) {
+                user = u;           
+                $(`#btnModify${userId}`).show()
+            })
+        }
+        comment_list()
     });
 
     // 회원인증
@@ -44,9 +58,9 @@
     }
   
     
-    $(document).ready(function () {
-        post_detail() 
-    });
+    // $(document).ready(function () {
+    //     post_detail() 
+    // });
   
 
     // Post 조회
@@ -100,7 +114,7 @@
                               </div> 
                               <hr>
                               <div class="posting_btn">
-                                <button onclick="location.href='/api/posts/${postsId}/edit'" class="btn btn-dark btn-lg"> EDIT </button>
+                                <button onclick="location.href='/api/posts/${postsId}/edit'" id="btnModify${userId}" style="display:none" class="btn btn-dark btn-lg"> EDIT </button>
                               </div>
                             </div>`
                   $('#detail-box').append(temp_html)}
@@ -132,7 +146,7 @@
                     console.log(comments)
 
                     if (comments.length > 0){
-                        for (let j=0; j< comments.length; j++){
+                        for (let j=comments.length-1; j >= 0; j--){
                             let nickname = comments[j]['nickname']
                             let comment = comments[j]['content']
                             let commentId = comments[j]['commentid']
@@ -166,6 +180,7 @@
 
     // 댓글을 UI에 그려주는 함수
     function makeComment(nickname,comment,commentId) {
+    
         // 접속한 userId와 댓글 userId가 같을 경우
         console.log("userId",userId,nickname,userId === nickname)
         if (userId === nickname) {
@@ -205,6 +220,7 @@
         let param = address.split("/")[5];
 
         let content = $('#inputContent').val();
+        let nickname = userId
 
         $.ajax({
             type: "POST",
@@ -213,10 +229,11 @@
             headers: {
             authorization: `Bearer ${localStorage.getItem("token")}`},
             data: JSON.stringify({
+                nickname: nickname,
                 content: content,
             }),
             success: function (response) {
-                alert(response["Message"])
+                // alert(response["Message"])
                 // customAlert(Message)
                 window.location.reload()
                 },
@@ -250,8 +267,6 @@
                 content: comment
             }),
             success: function (response) {
-                alert(response["Message"])
-                window.location.reload()
             },
             error: function (error) {
                 console.error(error.responseJSON.errorMessage);
@@ -277,10 +292,8 @@
                 data: {},
                 success: function (response) {
                     $(`#commentBody${commentId}`).hide()
-
                 },
                 error: function (error) {
-                    console.error(error.responseJSON.errorMessage);
                     alert(error.responseJSON.errorMessage)
                 },
             });
@@ -288,6 +301,13 @@
         window.location.reload()
     }
 
+
+    function loginCheck() {
+        if (!localStorage.getItem("token")) {
+            alert("로그인이 필요한 기능입니다.")
+            location.href = "/"
+        }
+    }
 
     //Alert
     function customAlert(text, confirmCallback) {
@@ -310,25 +330,12 @@
         <div id= "detail-box">
         </div>
 
-        <div class="comment_list">
-          <table class="table" style="margin: 20px auto 20px auto">
-          <thead class="thead-light">
-              <tr>
-                  <!-- <th scope="col" style="width: 200px;">NICKNAME</th>
-                  <th scope="col">COMMENT</th>                            -->
-              </tr>
-          </thead>
-          <tbody id="comment-box">
-          </tbody>
-          </table>  
-      </div>
-  
 
-      <div class ="posting">
+        <div class ="posting">
           <div class="mb-3 row">
-          <label for="inputContent" class="col-sm-2 col-form-label">CONTENT</label>
+          <label for="inputContent" class="col-sm-2 col-form-label" >Comment</label>
           <div class="col-lg-10">
-              <textarea class="form-control" id="inputContent" rows="1"></textarea>
+              <textarea class="form-control" id="inputContent" rows="1" onclick="loginCheck()"></textarea>
           </div>
           </div>                                        
           <div class="posting_btns">
@@ -336,6 +343,23 @@
               <!-- <button type="submit" onclick="deleting()" class="btn btn-outline-dark btn-lg"> Delete </button>  -->
           </div>
       </div>
+
+
+        <div class="comment_list">
+          <table class="table" style="margin: 20px auto 20px auto">
+          <thead class="thead-light">
+              <colgroup>
+                  <col style="width:10%"/>
+                  <col style="width:70%"/>
+                  <col style="width:15%"/>
+              </colgroup>
+          </thead>
+          <tbody id="comment-box">
+          </tbody>
+          </table>  
+      </div>
+  
+
 
     <!-- custom alarm -->
     <div
