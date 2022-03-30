@@ -35,6 +35,8 @@ router.get("/users/me", authMiddleware, async (req, res) => {
 router.post("/users", async (req, res) => {
     const { nickname, password, confirmPassword} = req.body
     const is_nickname = /^[a-zA-Z0-9]{3,10}$/ //닉네임 정규표현식
+    const existUsers_len = (await User.find({})).length
+    const userId = existUsers_len +1
 
     if (!(is_nickname.test(nickname))) {
         res.status(400).send({
@@ -71,7 +73,7 @@ router.post("/users", async (req, res) => {
     }
 
     //위의 사항이 해당되지 않으면 회원가입성공!
-    const user = new User({ nickname, password})
+    const user = new User({ userId, nickname, password})
     await user.save();
     res.status(201).send({});
 });
@@ -83,13 +85,12 @@ router.post("/auth", async (req, res) => {
     const {nickname, password} = req.body;
 
     const user = await User.findOne({ nickname, password }).exec();
-    console.log('user', user.password)
 
     if (!user) {
         res.status(400).send({errorMessage: '닉네임 또는 비밀번호를 확인해주세요'});
         return;
     } else {
-        const token = jwt.sign({ nickname : user.nickname}, "secretedkey");
+        const token = jwt.sign({ nickname : user.nickname, userid: user.userId}, "secretedkey");
             console.log('B_login-token',token)
             console.log('user', user.nickname)
             res.send ({token});

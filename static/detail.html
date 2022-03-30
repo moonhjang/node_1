@@ -19,12 +19,37 @@
     
 
     <script>
-    $(document).ready(function() {
-      post_detail();
+    let user;
+    getSelf(function (u) {
+      user = u;
+      userId = localStorage.getItem("nickname")
+      comment_list()
     });
-    
 
-    // Post, Comment 조회
+    // 회원인증
+    function getSelf(callback) {
+      $.ajax({
+        type: "GET",
+        url: "/api/users/me",
+        headers: {
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        success: function (response) {
+          callback(response.user);
+        },
+        error: function (error) {
+          customAlert(error.responseJSON.errorMessage);
+        },
+      });
+    }
+  
+    
+    $(document).ready(function () {
+        post_detail() 
+    });
+  
+
+    // Post 조회
     function post_detail() {
       let address = unescape(location.href)
       let param = address.split("/")[5];
@@ -36,7 +61,6 @@
           data: {},
           async: false,
           success: function (response) {
-              console.log(response)
               let rows = response
               for (let i = 0; i < rows.length; i++){
                   let postsId = rows[i]['postsId']
@@ -45,11 +69,10 @@
                   let content = rows[i]['content']
                   let createdAt = rows[i]['createdAt']
                   let comments = rows[i]['comments']
-                  console.log(comments.length === 0)
 
                   let date = createdAt.substr(0,10)
 
-                  temp_html =`<div class ="posting">
+                  let temp_html =`<div class ="posting">
                               <div class="labelR">
                                   <p>USER</p>
                                 </div>
@@ -80,26 +103,101 @@
                                 <button onclick="location.href='/api/posts/${postsId}/edit'" class="btn btn-dark btn-lg"> EDIT </button>
                               </div>
                             </div>`
-
-                      if (comments.length > 0){
-                          for (let j=0; j< comments.length; j++){
-                              let nickname = comments[j]['nickname']
-                              let comment = comments[j]['content']
-
-                              let temp_html_cmt = `<tr id="word-word">
-                                              <th scope="col" style="width: 200px;" id="cmt_nickname">${nickname}</td>
-                                              <td id="cmt_content">${comment}</td>
-                                              <td style="width: 80px;"><button type="submit" onclick="edit_comment()" class="btn btn-light"> EDIT </button></td>
-                                              <td style="width: 80px;"><button type="submit" onclick="delete_comment()" class="btn btn-light"> DELETE </button></td>   
-                                              </tr>`
-                  
-                              $('#comment-box').append(temp_html_cmt)}}
-
                   $('#detail-box').append(temp_html)}
             }       
       });
     }; 
     
+
+    // Comment 조회
+    function comment_list() {
+        let address = unescape(location.href)
+        let param = address.split("/")[5];
+
+        $.ajax({
+            type: "GET",
+            url: '/api/comments/'+param,
+            headers: {
+              authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            contentType: "json",
+            data: {},
+            async: false,
+            success: function(response) {
+                console.log(response)
+                let rows = response 
+
+                for (let i=0; i< rows.length; i++){
+                    let comments = response[i]['comments'];
+                    console.log(comments)
+
+                    if (comments.length > 0){
+                        for (let j=0; j< comments.length; j++){
+                            let nickname = comments[j]['nickname']
+                            let comment = comments[j]['content']
+                            let commentId = comments[j]['commentid']
+                            console.log(nickname, comment, commentId)
+                            makeComment(nickname,comment,commentId)
+                        }}
+                }
+              },
+            error: function(error) {
+                console.error(error.responseJSON.errorMessage); 
+            },
+        });
+    }            
+     
+    function editCommentShow(commentId) {
+        $(`#comment${commentId}`).hide()
+        $(`#commentbtn${commentId}`).hide()
+
+        $(`#commentDiv${commentId}`).show()
+
+        const commentText = $(`#comment${commentId}`).text().trim();
+        $(`#commentInput${commentId}`).val(commentText)
+    }
+
+    function editCommentHide(commentId) {
+        $(`#comment${commentId}`).show()
+        $(`#commentbtn${commentId}`).show()
+
+        $(`#commentDiv${commentId}`).hide()
+    }
+
+    // 댓글을 UI에 그려주는 함수
+    function makeComment(nickname,comment,commentId) {
+        // 접속한 userId와 댓글 userId가 같을 경우
+        console.log("userId",userId,nickname,userId === nickname)
+        if (userId === nickname) {
+        const temp_html = `<tr "commentBody${commentId}">
+                          <td scope="col" style="width: 220px;">${nickname}</td>
+                          <td id="comment${commentId}" >${comment}</td>
+                          <td display:inline;" id="commentbtn${commentId}"><span type="button" onclick="editCommentShow(${commentId})"  aria-hidden="true" > EDIT  |</span>
+                          <span type="button" onclick="deleteComment(${commentId})" aria-hidden="true"> DELETE </span></td> 
+                        
+                          <td colspan="3">
+                          <div id="commentDiv${commentId}" class="input-group mb-3" style="display: none">
+                            <input id="commentInput${commentId}" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                              <button class="btn btn-outline-secondary" type="button" onclick="editComment(${commentId})"> SAVE </button>
+                            </div>
+                          </div>
+                          </td>
+                          </tr>`
+  
+        $('#comment-box').append(temp_html)
+
+      } else { // 접속한 userId와 댓글 userId가 다를 경우
+          const temp_html = `<tr>
+                                <td scope="col">${nickname}</td>
+                                <td scope="col">${comment}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>`
+          $('#comment-box').append(temp_html)
+      }
+  }                    
 
     //Comment 작성
     function save_comment() {
@@ -120,7 +218,7 @@
             success: function (response) {
                 alert(response["Message"])
                 // customAlert(Message)
-                // window.location.href="/postlist.html"
+                window.location.reload()
                 },
             error: function (error) {
                 customAlert(error.responseJSON.errorMessage);
@@ -128,38 +226,65 @@
         });
     }
 
+    
     //Comment 수정
-    function edit_comment() {
+    function editComment(commentId) {
         let address = unescape(location.href)
         let param = address.split("/")[5];
-
-        let content = $('#cmt_content').val();
-        let nickname = $('#cmt_nickname').val();
+    
+        const comment = $(`#commentInput${commentId}`).val()
+        console.log(comment)
+        if (!comment) {
+            alert("댓글 내용이 존재하지 않습니다.")
+            return;
+        }
 
         $.ajax({
-            type: "PUT",
-            url: "/api/comments/"+ param,
-            headers: {
-                authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
+            type: "PATCH",
+            url: `/api/comments/`+ param +`/${commentId}`,
             contentType: "application/json",
+            headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
             data: JSON.stringify({
-                nickname: nickname,
-                content: content
+                content: comment
             }),
             success: function (response) {
-                console.log(response)
-                alert(response["msg"])
-                window.location.reload()  
+                alert(response["Message"])
             },
             error: function (error) {
-                customAlert(error.responseJSON.errorMessage);
+                console.error(error.responseJSON.errorMessage);
             },
         });
+        $(`#comment${commentId}`).text(comment)
+        editCommentHide(commentId)
     }
 
 
-    //Comment 삭제 
+    //Comment 삭제
+    function deleteComment(commentId) {
+        let address = unescape(location.href)
+        let param = address.split("/")[5];
+
+        if (confirm("댓글을 삭제하시겠습니까?")) {
+            $.ajax({
+                type: "DELETE",
+                url: `/api/comments/`+ param +`/${commentId}`,
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem("token")}`
+                },
+                data: {},
+                success: function (response) {
+                    $(`#commentBody${commentId}`).hide()
+                },
+                error: function (error) {
+                    console.error(error.responseJSON.errorMessage);
+                    alert(error.responseJSON.errorMessage)
+                },
+            });
+        }
+
+    }
 
 
     //Alert
@@ -184,18 +309,19 @@
         </div>
 
         <div class="comment_list">
-            <table class="table" style="margin: 20px auto 20px auto">
-            <thead class="thead-light">
-                <tr>
-                    <!-- <th scope="col" style="width: 200px;">NICKNAME</th>
-                    <th scope="col">COMMENT</th>                            -->
-                </tr>
-            </thead>
-            <tbody id="comment-box">
-            </tbody>
+          <table class="table" style="margin: 20px auto 20px auto">
+          <thead class="thead-light">
+              <tr>
+                  <!-- <th scope="col" style="width: 200px;">NICKNAME</th>
+                  <th scope="col">COMMENT</th>                            -->
+              </tr>
+          </thead>
+          <tbody id="comment-box">
+          </tbody>
           </table>  
       </div>
   
+
       <div class ="posting">
           <div class="mb-3 row">
           <label for="inputContent" class="col-sm-2 col-form-label">CONTENT</label>
@@ -208,7 +334,6 @@
               <!-- <button type="submit" onclick="deleting()" class="btn btn-outline-dark btn-lg"> Delete </button>  -->
           </div>
       </div>
-
 
     <!-- custom alarm -->
     <div

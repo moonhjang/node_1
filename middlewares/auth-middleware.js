@@ -1,6 +1,3 @@
-
-
-
 const jwt = require("jsonwebtoken");
 const User = require("../schemas/user");
 
@@ -24,10 +21,12 @@ module.exports = (req, res, next) => {
     try {
         const { nickname } = jwt.verify(authToken, "secretedkey"); 
             res.locals.nickname = nickname.split(' ');
+            console.log(res.locals.nickname)
             console.log('b')
             next();
         } catch (err) {
         console.log('c')    
+        
         res.status(401).json({
             errorMessage: "로그인 후 이용 가능한 기능입니다.",
         });

@@ -1,12 +1,11 @@
 const express = require("express");
-const Posts = require("../schemas/posts")
-const User = require("../schemas/user");
+const Posts = require("../schemas/posts");
+const Comment = require("../schemas/posts");
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth-middleware");
 const req = require("express/lib/request");
 
-
-// Posting detail(상세조회): DB의 내용가져오기
+// Comment 조회
 router.get('/:postsId', async (req, res) => {
     const { postsId } = req.params;
     const existPosts = await Posts.find({ postsId: Number(postsId) });
@@ -19,8 +18,10 @@ router.post("/:postsId", authMiddleware, async (req, res) => {
     const {content} = req.body
     const nickname = res.locals.nickname+'';
     const post = await Posts.findOne ({ postsId : Number(postsId)})
-    const commentid = post.comments.length +1
-    console.log('코멘트 아이디', commentid)
+
+    //Commentid: 날짜기준으로 번호 만들기
+    const date = new Date()
+    const commentid = date.valueOf();
 
     if (!content){
         res.status(400).send({errorMessage: '댓글 내용을 입력해주세요🙏'});
@@ -38,37 +39,37 @@ router.post("/:postsId", authMiddleware, async (req, res) => {
     }
 });
 
+
 // Comment 수정
-router.put("/:postsId", authMiddleware, async (req, res) => {
-    const { postsId } = req.params;
-    const { nickname, content} = req.body    //코멘트 아이디
-    const confirmNickname = res.locals.nickname+''; //로그인한 아이디
-    const post = await Posts.findOne ({ postsId : Number(postsId)})  //게시글
+router.patch("/:postsId/:commentId", async (req, res) => {
+    const {postsId,commentId} = req.params;
+    const {content} = req.body    //코멘트 아이디
 
-    console.log('확인',nickname, content,confirmNickname,post.comments)
-    console.log('확인2',confirmNickname)
-    console.log('확인3',post.comments)
-
-    if (nickname===confirmNickname) {
-        
+    try {
+        await Posts.updateOne(
+        { postsId : Number(postsId), "comments.commentid": Number(commentId)},
+        { $set: {"comments.$.content": content} });
+        return res.status(200).send({Message: '저장완료🤸'});
+    } catch (error) {
+        return res.status(400).send({Message: '저장실패!'});
     }
-    // if (!content){
-    //     res.status(400).send({errorMessage: '댓글 내용을 입력해주세요🙏'});
-    //     return;
-    // } 
-
-    // if (content){
-
-    //     post.comments.push({
-    //         nickname: nickname,
-    //         content: content
-    //     })
-    //     await post.save()
-    //     return res.status(200).send({Message: '저장완료🤸'});
-    // }
 });
 
+
 // Comment 삭제
+router.delete("/:postsId/:commentId", async (req, res) => {
+    const {postsId,commentId} = req.params;
+    const {content} = req.body    //코멘트 아이디
+
+    Posts.findOneAndUpdate(
+        { postsId : Number(postsId)},
+        {   $pull: {comments: {commentid: commentId}}},
+        { new: true},
+        function(err) {
+            if(err) {console.log(err)}
+        }
+    )
+});
 
 
 

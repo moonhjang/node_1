@@ -62,7 +62,7 @@
                     content: content
                 }),
                 success: function (response) {
-                    alert(response["msg"])
+                    alert(response["Message"])
                     // customAlert(Message)
                     // window.location.href="/postlist.html"
                   },
@@ -82,8 +82,9 @@
 
         function signOut() {
             localStorage.clear();
+            alert("로그아웃 하시겠습니까?");
             window.location.href = "/";
-          }
+        }
       </script>
     </head>
 

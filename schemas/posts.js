@@ -1,7 +1,6 @@
 
 const mongoose = require("mongoose");
 
-
 const commentSchema = new mongoose.Schema({
   nickname : String,
   content : String,
@@ -43,5 +42,6 @@ const postsSchema = new mongoose.Schema({
   );
 
 
+module.exports = mongoose.model("Comment", commentSchema);
 module.exports = mongoose.model("Posts", postsSchema);
 
