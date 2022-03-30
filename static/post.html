@@ -62,13 +62,13 @@
                     content: content
                 }),
                 success: function (response) {
-                    alert(response["Message"])
-                    // window.location.href="/postlist.html"
+                    alert(response["Message"]) 
                   },
                 error: function (error) {
                     customAlert(error.responseJSON.errorMessage);
                 },
             });
+            window.location.href="/postlist.html"
         }
 
         function customAlert(text, confirmCallback) {
@@ -80,16 +80,19 @@
         }
 
         function signOut() {
-            localStorage.clear();
-            alert("로그아웃 하시겠습니까?");
-            window.location.href = "/";
+          if (confirm('로그아웃 하시겠습니까?')) {
+              localStorage.clear();
+              window.location.href = '/';
+          }else {
+              window.location.reload;
+          }
         }
       </script>
     </head>
 
     <body>
       <div class="background">
-        <h1 onclick="location.href='/'">게시글 작성페이지</h1>
+        <h1 onclick="location.href='/postlist.html'">게시글 작성페이지</h1>
         <button type="button" onclick="signOut()" class="btn btn-outline-light">log-Out</button>
       </div>
     

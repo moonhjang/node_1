@@ -171,16 +171,19 @@
         }    
 
     function signOut() {
+        if (confirm('로그아웃 하시겠습니까?')) {
             localStorage.clear();
-            alert("로그아웃 하시겠습니까?");
-            window.location.href = "/";
+            window.location.href = '/';
+        }else {
+            window.location.reload;
         }
+    }
     </script>
     </head>
 
     <body>
       <div class="background">
-        <h1 onclick="location.href='/'">게시글 수정페이지</h1>
+        <h1 onclick="location.href='/postlist.html'">게시글 수정페이지</h1>
         <button type="button" onclick="signOut()" class="btn btn-outline-light">log-Out</button>
       </div>
     

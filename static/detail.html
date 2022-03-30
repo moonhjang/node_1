@@ -19,13 +19,7 @@
     
 
     <script>
-    // let user;
-    // getSelf(function (u) {
-    //   user = u;
-    //   userId = localStorage.getItem("nickname")
-    //   comment_list()
-    // });
-
+    
     let userId;
     $(document).ready(function () {
         post_detail()
@@ -34,7 +28,7 @@
         if (localStorage.getItem("token")) {
             getSelf(function (u) {
                 user = u;           
-                $(`#btnModify${userId}`).show()
+                $(`#btnModify${user}`).show()
             })
         }
         comment_list()
@@ -114,7 +108,7 @@
                               </div> 
                               <hr>
                               <div class="posting_btn">
-                                <button onclick="location.href='/api/posts/${postsId}/edit'" id="btnModify${userId}" style="display:none" class="btn btn-dark btn-lg"> EDIT </button>
+                                <button onclick="editing()" id="btnModify${userId}"  aria-hidden="true" class="btn btn-dark btn-lg"> EDIT </button>
                               </div>
                             </div>`
                   $('#detail-box').append(temp_html)}
@@ -138,19 +132,16 @@
             data: {},
             async: false,
             success: function(response) {
-                console.log(response)
                 let rows = response 
-
                 for (let i=0; i< rows.length; i++){
                     let comments = response[i]['comments'];
-                    console.log(comments)
 
                     if (comments.length > 0){
                         for (let j=comments.length-1; j >= 0; j--){
                             let nickname = comments[j]['nickname']
                             let comment = comments[j]['content']
                             let commentId = comments[j]['commentid']
-                            console.log(nickname, comment, commentId)
+                            
                             makeComment(nickname,comment,commentId)
                         }}
                 }
@@ -301,12 +292,28 @@
         window.location.reload()
     }
 
-
+    //로그인 확인
     function loginCheck() {
         if (!localStorage.getItem("token")) {
             alert("로그인이 필요한 기능입니다.")
             location.href = "/"
         }
+    }
+
+    //로그아웃
+    function signOut() {
+      if (confirm('로그아웃 하시겠습니까?')) {
+          localStorage.clear();
+          window.location.href = '/';
+      }else {
+          window.location.reload;
+      }
+    }
+
+    function editing() {
+      let address = unescape(location.href)
+      let postsId = address.split("/")[5];
+      location.href=`/api/posts/${postsId}/edit`
     }
 
     //Alert
@@ -323,25 +330,26 @@
 </head>
 
 <body>
-    <div onclick="location.href='/'" class="background">
+    <div onclick="location.href='/postlist.html'" class="background">
         <h1>게시글 조회페이지</h1>
-        </div>
+        <button type="button" onclick="signOut()" class="btn btn-outline-light">log-Out</button>
+    </div>
 
         <div id= "detail-box">
         </div>
 
 
-        <div class ="posting">
-          <div class="mb-3 row">
-          <label for="inputContent" class="col-sm-2 col-form-label" >Comment</label>
-          <div class="col-lg-10">
-              <textarea class="form-control" id="inputContent" rows="1" onclick="loginCheck()"></textarea>
-          </div>
-          </div>                                        
-          <div class="posting_btns">
-              <button type="submit" onclick="save_comment()" class="btn btn-dark btn-lg"> SAVE </button>
-              <!-- <button type="submit" onclick="deleting()" class="btn btn-outline-dark btn-lg"> Delete </button>  -->
-          </div>
+    <div class ="posting">
+        <div class="mb-3 row">
+        <label for="inputContent" class="col-sm-2 col-form-label" >Comment</label>
+        <div class="col-lg-10">
+            <textarea class="form-control" id="inputContent" rows="1" onclick="loginCheck()"></textarea>
+        </div>
+        </div>                                        
+        <div class="posting_btns">
+            <button type="submit" onclick="save_comment()" class="btn btn-dark btn-lg"> SAVE </button>
+            <!-- <button type="submit" onclick="deleting()" class="btn btn-outline-dark btn-lg"> Delete </button>  -->
+        </div>
       </div>
 
 
