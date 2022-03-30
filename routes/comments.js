@@ -1,6 +1,5 @@
 const express = require("express");
 const Posts = require("../schemas/posts");
-const Comment = require("../schemas/posts");
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth-middleware");
 const req = require("express/lib/request");
@@ -41,7 +40,7 @@ router.post("/:postsId", authMiddleware, async (req, res) => {
 
 
 // Comment 수정
-router.patch("/:postsId/:commentId", async (req, res) => {
+router.patch("/:postsId/:commentId", authMiddleware, async (req, res) => {
     const {postsId,commentId} = req.params;
     const {content} = req.body    //코멘트 아이디
 

@@ -251,6 +251,7 @@
             }),
             success: function (response) {
                 alert(response["Message"])
+                window.location.reload()
             },
             error: function (error) {
                 console.error(error.responseJSON.errorMessage);
@@ -276,14 +277,15 @@
                 data: {},
                 success: function (response) {
                     $(`#commentBody${commentId}`).hide()
+
                 },
                 error: function (error) {
                     console.error(error.responseJSON.errorMessage);
                     alert(error.responseJSON.errorMessage)
                 },
             });
-        }
-
+        } 
+        window.location.reload()
     }
 
 

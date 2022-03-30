@@ -4,11 +4,6 @@ const User = require("../schemas/user");
 module.exports = (req, res, next) => {
     const { authorization } = req.headers;
     const [authType, authToken] = (authorization || "").split(" ");
-    console.log(authType)
-    console.log(authToken)
-    console.log( '위치..확인', authorization )
-    console.log('여기를 지나쳤어요')
-   
 
     if (!authToken || authType !== "Bearer") {
         console.log('a')
@@ -20,10 +15,12 @@ module.exports = (req, res, next) => {
  
     try {
         const { nickname } = jwt.verify(authToken, "secretedkey"); 
-            res.locals.nickname = nickname.split(' ');
-            console.log(res.locals.nickname)
-            console.log('b')
-            next();
+        User.findOne( {nickname} )
+        .exec()
+        .then((nickname) => {
+            res.locals.user = nickname
+            next()
+        })    
         } catch (err) {
         console.log('c')    
         
