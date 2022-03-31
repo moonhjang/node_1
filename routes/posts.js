@@ -1,6 +1,5 @@
 const express = require("express");
 const Posts = require("../schemas/posts")
-const User = require("../schemas/user");
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth-middleware");
 

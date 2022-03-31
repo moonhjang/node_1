@@ -60,7 +60,7 @@
         contentType: "application/json",
         data: JSON.stringify({
           nickname: nickname,
-          password: password,
+          pw: password,
         }),
         success: function (response) {
           localStorage.setItem("token", response.token);

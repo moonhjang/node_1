@@ -52,11 +52,6 @@
     }
   
     
-    // $(document).ready(function () {
-    //     post_detail() 
-    // });
-  
-
     // Post 조회
     function post_detail() {
       let address = unescape(location.href)
@@ -173,7 +168,6 @@
     function makeComment(nickname,comment,commentId) {
     
         // 접속한 userId와 댓글 userId가 같을 경우
-        console.log("userId",userId,nickname,userId === nickname)
         if (userId === nickname) {
         const temp_html = `<tr "commentBody${commentId}">
                           <td scope="col" style="width: 220px;">${nickname}</td>
@@ -203,7 +197,7 @@
                             </tr>`
           $('#comment-box').append(temp_html)
       }
-  }                    
+    }                    
 
     //Comment 작성
     function save_comment() {
@@ -241,7 +235,6 @@
         let param = address.split("/")[5];
     
         const comment = $(`#commentInput${commentId}`).val()
-        console.log(comment)
         if (!comment) {
             alert("댓글 내용이 존재하지 않습니다.")
             return;
@@ -303,12 +296,12 @@
     //로그아웃
     function signOut() {
       if (confirm('로그아웃 하시겠습니까?')) {
-          localStorage.clear();
-          window.location.href = '/';
-      }else {
-          window.location.reload;
+              localStorage.clear();
+              window.location.href = '/';
+          }else {
+              window.location.reload;
+          }
       }
-    }
 
     function editing() {
       let address = unescape(location.href)
@@ -348,7 +341,6 @@
         </div>                                        
         <div class="posting_btns">
             <button type="submit" onclick="save_comment()" class="btn btn-dark btn-lg"> SAVE </button>
-            <!-- <button type="submit" onclick="deleting()" class="btn btn-outline-dark btn-lg"> Delete </button>  -->
         </div>
       </div>
 

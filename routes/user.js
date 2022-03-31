@@ -86,11 +86,11 @@ router.post("/users", async (req, res) => {
     }
 
     //위의 사항이 해당되지 않으면 회원가입성공!
-    //비밀번호 암호화
-    
+    //비밀번호 암호화  
     const password = CryptoJS.AES.encrypt(pw, process.env.keyForDecrypt).toString();
     console.log(typeof password, "회원가입")
 
+    
     const user = new User({ nickname, password})
     await user.save();
     res.status(201).send({});       
@@ -100,20 +100,22 @@ router.post("/users", async (req, res) => {
 
 //로그인하기
 router.post("/auth", async (req, res) => {
-    const {nickname, password} = req.body;
-    
-    const user = await User.findOne({ nickname: nickname});
-    const existPw = user.password 
- 
-    const decryptedPw = CryptoJS.AES.decrypt(existPw,process.env.keyForDecrypt);
-    const originPw = decryptedPw.toString(CryptoJS.enc.Utf8);
+    const {nickname, pw} = req.body;
+    const user = await User.findOne({nickname}).exec();
 
     if (!user) {
         res.status(400).send({errorMessage: '닉네임 또는 비밀번호를 확인해주세요'});
         return;
     }
 
-    if (originPw === password){
+    const existPw = user.password 
+    const decryptedPw = CryptoJS.AES.decrypt(existPw,process.env.keyForDecrypt);
+    const originPw = decryptedPw.toString(CryptoJS.enc.Utf8);
+
+    if (originPw != pw) {
+        res.status(400).send({errorMessage: '닉네임 또는 비밀번호를 확인해주세요'});
+        return;
+    } else {
         const token = jwt.sign({ nickname : user.nickname},process.env.JWT_SECRET);
             res.send ({token});
     }
