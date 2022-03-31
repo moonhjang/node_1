@@ -1,6 +1,8 @@
+require("dotenv").config();
 const express = require("express");
 const connect = require("./schemas/index.js");
 const cors = require("cors")
+
 const routers = require("./routes")
 const app = express();
 const port = 3000;
@@ -21,6 +23,7 @@ app.use(express.urlencoded({extended: false}))
 app.use(express.json());
 
 app.use(requestMiddleware);
+
 
 app.use('/api', routers);
 
