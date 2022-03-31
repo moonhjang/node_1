@@ -61,12 +61,12 @@ router.post("/users", async (req, res) => {
     }
 
     //비밀번호와 비밀번호 재입력이 같은지 확인
-    // if (pw.length < 4) {
-    //     res.status(400).send({
-    //         errorMessage: "비밀번호는 4자이상으로 만들주세요."
-    //     });
-    //     return; 
-    // }
+    if (pw.length < 4) {
+        res.status(400).send({
+            errorMessage: "비밀번호는 4자이상으로 만들주세요."
+        });
+        return; 
+    }
 
     //비밀번호와 닉네임과 같은 경우 가입실패 (추가하기)
     if (pw === nickname){
