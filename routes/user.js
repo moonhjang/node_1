@@ -39,7 +39,6 @@ router.get("/users/me", authMiddleware, async (req, res) => {
 router.post("/users", async (req, res) => {
     const { nickname, pw, confirmpw} = req.body
 
-    console.log(pw)
     //닉네임 표현식 확인
     const is_nickname = /^[a-zA-Z0-9]{3,10}$/ //닉네임 정규표현식
     if (!(is_nickname.test(nickname))) {
@@ -88,7 +87,6 @@ router.post("/users", async (req, res) => {
     //위의 사항이 해당되지 않으면 회원가입성공!
     //비밀번호 암호화  
     const password = CryptoJS.AES.encrypt(pw, process.env.keyForDecrypt).toString();
-    console.log(typeof password, "회원가입")
 
     
     const user = new User({ nickname, password})
