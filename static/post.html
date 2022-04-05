@@ -31,8 +31,10 @@
               type: "GET",
               url: "/api/users/me",
               headers: {
-                authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
+                authorization: `Bearer ${localStorage.getItem("token")}`,},
+              contentType: "json",
+              data: {},
+              async: false,
               success: function (response) {
                 callback(response.user);
               },
@@ -63,12 +65,12 @@
                 }),
                 success: function (response) {
                     alert(response["Message"]) 
+                    window.location.reload()
                   },
                 error: function (error) {
                     customAlert(error.responseJSON.errorMessage);
                 },
             });
-            window.location.href="/postlist.html"
         }
 
         function customAlert(text, confirmCallback) {
@@ -123,8 +125,8 @@
             <textarea class="form-control" id="content" name="content" rows="3"></textarea>
           </div>
         </div>
-        <div class="posting_btn">
-        <button type="submit" onclick="save_posting()" class="btn btn-dark btn-lg"> SAVE </button> 
+        <div class="posting_btns">
+          <button type="button" onclick="save_posting()" class="btn btn-dark btn-lg"> SAVE </button> 
         </div>
       </div>
 
