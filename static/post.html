@@ -70,6 +70,7 @@
                 error: function (error) {
                     customAlert(error.responseJSON.errorMessage);
                 },
+                
             });
         }
 
@@ -86,9 +87,17 @@
               localStorage.clear();
               window.location.href = '/';
           }else {
-              window.location.reload;
+              window.location.reload();
           }
         }
+
+         //로그인 확인
+        function loginCheck() {
+          if (!localStorage.getItem("token")) {
+              alert("로그인이 필요한 기능입니다.")
+              location.href = "/"
+          }
+        } 
       </script>
     </head>
 
@@ -102,13 +111,13 @@
         <div class="mb-3 row">
           <label for="inputUser" class="col-sm-2 col-form-label">USER</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" id="user" name="user">
+            <input type="text" class="form-control" id="user" name="user" onclick="loginCheck()">
           </div>
         </div>
         <div class="mb-3 row">
           <label for="inputPassword" class="col-sm-2 col-form-label">PASSWORD</label>
           <div class="col-sm-10">
-            <input type="password" class="form-control" id="password" name="password">
+            <input type="password" class="form-control" id="password" name="password" onclick="loginCheck()">
           </div>        
         </div>
         <div style="height: 10px;"></div>
@@ -116,13 +125,13 @@
          <div class="mb-3 row">
           <label for="inputTitle" class="col-sm-2 col-form-label">TITLE</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" id="title" name="title">
+            <input type="text" class="form-control" id="title" name="title" onclick="loginCheck()">
           </div>
         </div>
         <div class="mb-3 row">
           <label for="inputContent" class="col-sm-2 col-form-label">CONTENT</label>
           <div class="col-sm-10">
-            <textarea class="form-control" id="content" name="content" rows="3"></textarea>
+            <textarea class="form-control" id="content" name="content" rows="3" onclick="loginCheck()"></textarea>
           </div>
         </div>
         <div class="posting_btns">
